@@ -8,8 +8,12 @@
     <!-- Libraries -->
     <!-- Fonts -->
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     <!-- Local -->
-    <link rel="stylesheet" href="stylesheet.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="style/main.min.css" media="screen" title="no title" charset="utf-8">
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
@@ -17,33 +21,27 @@
 
   <body>
 
-    <div class="head" id="head">
-      <header id="header" class="header">
-        <div class="text-center">
-          Created by
-          <a href="https://github.com/Lilyheart/anthropocene-air">
-            Lily Romano</a>
-        </div>
-      </header>
-
-      <!-- Title -->
-      <h1>
-        <a href="index.html">Anthropocene Air</a>
-      </h1>
-
-      <!-- Menu Bar -->
-      <div id="stripe" class="stripe">
+    <header>
+      <div class="text-center stripe">
+        Created by <a href="https://github.com/Lilyheart/anthropocene-air">Lily Romano</a>
+      </div>
+      <h1><a href="index.html">Anthropocene Air</a></h1>
+      <div id="stripe" class="stripe"></div>
+    </header>
+    <div id="container" class="container-fluid">
+      <div id="mapid">
 
       </div>
     </div>
-    <div id="container" class="container-fluid">
-      <div class="row">
-
-
-
-      </div> <!-- end class="row" -->
-    </div>
     <!-- Script Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
+    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
+    <script src="https://code.highcharts.com/mapdata/countries/us/us-all.js"></script>
+    <!-- Local -->
+    <script type="text/javascript" src="main.js"></script>
     <span>
     </span>
   </body>

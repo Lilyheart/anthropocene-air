@@ -1,0 +1,202 @@
+@import "variables";
+
+/* EXTENDS */
+
+%primary-color-text {
+  color: $color-primary-0;
+  background-color: $color-primary-0-inverse;
+}
+%inverse-color-text {
+  color: $color-primary-0-inverse;
+  background-color: $color-primary-0;
+}
+
+/* Basic CSS Overloads */
+
+html {
+  overflow-y: scroll;
+}
+body {
+  background-color: $background;
+  color: $color-primary-0-inverse;
+  font-family: "Montserrat", "Avenir";
+}
+.loading {
+  margin-top: 10em;
+  text-align: center;
+  color: gray;
+}
+h1 {
+  @extend %inverse-color-text;
+  margin-bottom: 0;
+  padding: 20px 0;
+  text-align: center;
+  a {
+    text-decoration: none;
+  }
+}
+a, a:hover {
+  color: inherit;
+}
+
+/* MISC DIVS */
+
+.stripe {
+  @extend %primary-color-text;
+  height: 28px;
+  font-size: 16px;
+  text-align: right;
+  .dropdown {
+    display: inline-block;
+    height: 100%;
+    position: relative;
+  }
+  button {
+    @extend %primary-color-text;
+    border: none;
+    border-radius: 0;
+    background: none;
+    padding: 0 6px;
+    height: 100%;
+    transition: all .3s;
+    outline: none;
+  }
+  button:hover {
+    @extend %inverse-color-text;
+  }
+}
+.pad-below {
+  padding-bottom: 15px;
+}
+.progress-bar {
+  background-color: $color-primary-0;
+}
+.tab-pane {
+  margin-top: 15px;
+}
+
+.milestone-selection.row {
+  margin: $row-margins;
+}
+
+/* NAV STUFFS */
+
+.nav-pills, .nav-tabs {
+  &:active {
+    outline: none;
+  }
+  &>li+li {
+    margin-left: 5px;
+  }
+}
+.nav-pills .nav-link, .nav-tabs .nav-link, button.btn-primary, button.btn-link {
+  justify-content: center;
+  font-weight: bold;
+  letter-spacing: 2px;
+  transition: all .2s;
+
+  /* Default with add specificites for nonsense */
+  &, &.active, &.btn:not(.disabled):active {
+    @extend %inverse-color-text;
+    border-color: $color-primary-0;
+  }
+  &.btn {
+    font-weight: bold;
+    letter-spacing: 3px;
+  }
+  &:not(.active):not(button) {
+    background-color: $color-primary-4;
+    border-color: $color-primary-4;
+    color: $color-primary-3;
+  }
+  &.disabled:not(button), &:disabled {
+    background-color: $color-primary-0-disabled;
+    border-color: $color-primary-0-disabled;
+    color: $color-primary-3;
+  }
+  &:not(.active):not(:disabled) {
+    #{$selected} {
+      background-color: $color-secondary-2-0;
+      border-color: $color-secondary-2-0;
+      color: $color-primary-0-inverse;
+      text-decoration: none;
+    }
+  }
+}
+.nav-pills {
+  #{$a-tags} {
+    color: $color-primary-0-inverse;
+  }
+}
+.nav-tabs .nav-link:not(button):not(:disabled) {
+  &.active, &:not(.active), &:not(.active):hover {
+    border-bottom-color: $nav-tab-border;
+  }
+}
+
+/* CARDS */
+
+.card {
+  border-color: $color-primary-0;
+  background-color: $background;
+  color: $color-primary-3;
+}
+.card-header {
+  padding: 0;
+  button {
+    @extend %inverse-color-text;
+    padding: 12px 20px;
+    width: 100%;
+    text-align: left;
+    border-radius: 0;
+  }
+}
+
+/* SELECT STUFFS */
+
+.selectize-dropdown-content {
+  .option:hover {
+    @extend %inverse-color-text;
+  }
+}
+
+/* DATATABLES */
+
+table {
+  &.dataTable.dtr-inline.collapsed>tbody>tr {
+    &[role="row"] {
+      &>td:first-child:before,
+      &>th:first-child:before {
+        background-color: $color-primary-0;
+        margin-top: 3px;
+      }
+    }
+    &.parent {
+      &>td:first-child:before,
+      &>th:first-child:before {
+        background-color: $color-secondary-2-4
+      }
+    }
+  }
+}
+td a {
+  display:block;
+  width:100%;
+}
+.page-item {
+  a {
+    color: $color-primary-0;
+  }
+  &.active {
+    .page-link {
+      @extend %inverse-color-text;
+      border-color: $color-primary-0;
+    }
+  }
+  &.disabled {
+    .page-link {
+      @extend %primary-color-text;
+      border-color: $color-primary-0-inverse;
+    }
+  }
+}
