@@ -1,9 +1,11 @@
 /*eslint id-length: ["error", { "exceptions": ["i", "j", "x", "y", "z"] }]*/
-var parameterDatasets, dataCSV, dataDictionary, chart, loadParam1, loadParam2,
-    map = Highcharts.maps["countries/us/us-all"];
+var parameterDatasets, chart, loadParam1, loadParam2,
+    dataDictionary = {};
 const XSHIFT = 5,
       YSHIFT = -200,
-      DECIMALS = 2;
+      DECIMALS = 2,
+      MISSINGVALUE = -999,
+      PRINTME = 100000000000;
 
 // Create array to store dataset information
 parameterDatasets = {
@@ -22,37 +24,33 @@ NH4f: {
 loadParam1 = Object.keys(parameterDatasets)[0];
 
 // Functions
-function displayParameterMap() {
-  let paramName, paramData, date;
+function displayParameterMap(parameter) {
+  let paramData, date,
+      map = Highcharts.maps["countries/us/us-all"];
 
-  paramName = "ALf";
-  paramData = dataDictionary[paramName];
+  paramData = dataDictionary[parameter];
   date = Object.keys(paramData)[0];
 
   chart = Highcharts.mapChart("mapid", {
     title: {
       text: "Parameter Map"
     },
+    subtitle: {
+      text: parameterDatasets[parameter].name + " - " + date
+    },
     tooltip: {
-      pointFormat: "Lat: {point.lat}<br>" +
-      "Lon: {point.lon}<br>" +
-      "Value: {point.value}"
+      pointFormatter: function() {
+        return "Lat: " + this.lat + "<br>" +
+               "Lon: " + this.lon + "<br>" +
+               "Value: " + this.z / PRINTME;
+      },
+      shared: true
     },
-    xAxis: {
-      crosshair: {
-        zIndex: 5,
-        dashStyle: "dot",
-        snap: false,
-        color: "gray"
-      }
-    },
-    yAxis: {
-      crosshair: {
-        zIndex: 5,
-        dashStyle: "dot",
-        snap: false,
-        color: "gray"
-      }
+    mapNavigation: {
+        enabled: true,
+        buttonOptions: {
+            verticalAlign: "bottom"
+        }
     },
     series: [
       {
@@ -75,77 +73,67 @@ function displayParameterMap() {
           enabled: true,
           format: "{point.value}"
       },
-      name: paramName,
+      name: parameter,
       data: paramData[date],
-      minSize: 10,
+      minSize: Math.max(0, parameterDatasets[parameter].minValue),
       maxSize: "12%",
-      color: Highcharts.getOptions().colors[0]
+      color: "#3E5E6D"
       }
     ]
   });
 
-  $("#slider").bind("input", function() {
-    // chart.series[0].setData(data[+this.value].data);
-  });
-}
-
-function displayCrosshairs() {
-  document.getElementById("mapid").addEventListener("mousemove", function (event) {
-    var position, eventPointer;
-
-    if (chart) {
-      if (!chart.lab) {
-        chart.lab = chart.renderer.text("", 0, 0)
-          .attr({zIndex: 5})
-          .css({color: "#505050"})
-          .add();
-      }
-
-      eventPointer = chart.pointer.normalize(event);
-      position = chart.fromPointToLatLon({
-        x: chart.xAxis[0].toValue(eventPointer.chartX),
-        y: chart.yAxis[0].toValue(eventPointer.chartY)
-      });
-
-      chart.lab.attr({
-        x: eventPointer.chartX + XSHIFT,
-        y: eventPointer.chartY + YSHIFT,
-        text: "Lat: " + position.lat.toFixed(DECIMALS) + "<br>Lon: " + position.lon.toFixed(DECIMALS)
-      });
-    }
-  });
+  // $("#slider").bind("input", function() {
+  //   chart.series[0].setData(data[+this.value].data);
+  // });
 }
 
 function parseCSV(data) {
-  let headers, chartData, lineData, paramName, date, value, lat, long;
+  let rawData, headers, chartData, lineData, paramName, date, value, lat, long,
+      minValue, maxValue;
 
-  dataCSV = data.split("\n");
-  dataDictionary = {};
-  headers = dataCSV[0].split(",");
+  rawData = data.split("\n");
+  headers = rawData[0].split(",");
 
   // for each row of data
-  for (let i = 1; i < dataCSV.length; i += 1) {
-    lineData = dataCSV[i].split(",");
+  for (let i = 1; i < rawData.length; i += 1) {
+    lineData = rawData[i].split(",");
 
     date = lineData[0];
-    lat = lineData[1];
-    long = lineData[2];
+    lat = parseFloat(lineData[1]);
+    long = parseFloat(lineData[2]);
 
     // for each parameter
     for (let j = 3; j < headers.length; j += 1) {
+      if (parseFloat(lineData[j]) === MISSINGVALUE) {
+        break;
+      }
+      
       chartData = {};
       paramName = headers[j].split(":")[0];
-      value = lineData[j]; //TODO print damn you!
-      chartData["z"] = value;
-      chartData["lat"] = parseFloat(lat);
-      chartData["lon"] = parseFloat(long);
+      chartData["z"] = lineData[j] * PRINTME;
+      chartData["lat"] = lat;
+      chartData["lon"] = long;
 
-      // if the parameter doesn't exist
+      // test for min value
+      if (!parameterDatasets[paramName].hasOwnProperty("minValue")) {
+        parameterDatasets[paramName].minValue = chartData["z"];
+      } else if (chartData["z"] < parameterDatasets[paramName].minValue) {
+        parameterDatasets[paramName].minValue = chartData["z"];
+      }
+
+      // test for max value
+      if (!parameterDatasets[paramName].hasOwnProperty("maxValue")) {
+        parameterDatasets[paramName].maxValue = chartData["z"];
+      } else if (chartData["z"] > parameterDatasets[paramName].maxValue) {
+        parameterDatasets[paramName].maxValue = chartData["z"];
+      }
+
+      // if the parameter doesn't exist, create it
       if (!dataDictionary.hasOwnProperty(paramName)) {
         dataDictionary[paramName] = {};
       }
 
-      // if the date doesn't exist
+      // if the date doesn't exist, create it and then add the chart data
       if (!dataDictionary[paramName].hasOwnProperty(date)) {
         dataDictionary[paramName][date] = [chartData];
       } else {
@@ -155,7 +143,7 @@ function parseCSV(data) {
   }
 }
 
-function getCSVdata(parameter) {
+function updateChart(parameter) {
   if (!parameterDatasets[parameter].isLoaded) {
     $.ajax({
       type: "GET",
@@ -164,7 +152,8 @@ function getCSVdata(parameter) {
       success: function(data) {
         parseCSV(data);
         parameterDatasets[parameter].isLoaded = true;
-        console.log("x");
+        displayParameterMap(parameter);
+        console.log(">>> [" + parameter + "] is loaded");
       }
     });
   }
@@ -172,9 +161,7 @@ function getCSVdata(parameter) {
 
 $(document).ready(function() {
 
-  getCSVdata(loadParam1);
-  // displayParameterMap();
-  // displayCrosshairs();
+  updateChart(loadParam1);
 
   document.getElementById("mapid").addEventListener("mouseout", function () {
     if (chart && chart.lab) {
