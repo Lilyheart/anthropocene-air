@@ -1,5 +1,5 @@
 /*eslint id-length: ["error", { "exceptions": ["i", "j", "x", "y", "z"] }]*/
-var parameterDatasets, chart, loadParam1, loadParam2,
+var parameterDatasets, chart, loadParam1, loadParam2, isPlaying,
     dataDictionary = {};
 const XSHIFT = 5,
       YSHIFT = -200,
@@ -7,6 +7,7 @@ const XSHIFT = 5,
       MISSINGVALUE = -999,
       TWODIGITDATE = 10,
       INVERSE = -1,
+      TIMEOUTSPEED = 750,
       PRINTME = 100000000000;
 
 // Create array to store dataset information
@@ -24,8 +25,9 @@ NH4f: {
 loadParam1 = Object.keys(parameterDatasets)[0];
 
 // Functions
-function displayDate(date) {
-  let dateString = "";
+function displayDate(UTCdate) {
+  let dateString = "",
+      date = new Date(UTCdate);
 
   if ((date.getMonth() + 1) < TWODIGITDATE) {
     dateString += 0;
@@ -40,16 +42,32 @@ function displayDate(date) {
   return dateString;
 }
 
-function displayParameterMap(parameter) {
+function incrementDisplayDate(step) {
+  let newIndex, dateSelected;
+
+  newIndex = $("#dateSlider").slider("getValue") + step;
+  dateSelected = displayDate(parameterDatasets[loadParam1].dates[newIndex]);
+
+  $("#dateSlider").slider("setValue", newIndex);
+  $("#dateSliderValue").text(displayDate(parameterDatasets[loadParam1].dates[newIndex]));
+  try {
+    chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
+    chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
+  } catch (error) {
+    //
+  }
+}
+
+function displayParameterMap() {
   let paramData, date,
       // map = Highcharts.maps["countries/us/us-all"];
       map = Highcharts.maps["countries/us/custom/us-all-territories"];
 
-  paramData = dataDictionary[parameter];
+  paramData = dataDictionary[loadParam1];
   date = Object.keys(paramData)[0];
 
 
-  parameterDatasets[parameter].dates.sort(function (date1, date2) {
+  parameterDatasets[loadParam1].dates.sort(function (date1, date2) {
     if (date1 > date2) {
       return 1;
     }
@@ -60,17 +78,18 @@ function displayParameterMap(parameter) {
     }
   });
 
-  $("#dateSlider").slider("setAttribute", "max", (parameterDatasets[parameter].dates.length - 1 - 1));
+  $("#dateSlider").slider("setAttribute", "max", (parameterDatasets[loadParam1].dates.length - 1 - 1));
   $("#dateSlider").on("slide", function(slideEvt) {
-    $("#dateSliderValue").text(displayDate(parameterDatasets[parameter].dates[slideEvt.value]));
+    $("#dateSliderValue").text(displayDate(parameterDatasets[loadParam1].dates[slideEvt.value]));
   });
+  incrementDisplayDate(0);
 
   chart = Highcharts.mapChart("mapid", {
     title: {
       text: "Parameter Map"
     },
     subtitle: {
-      text: parameterDatasets[parameter].name + " - " + date
+      text: parameterDatasets[loadParam1].name + " - " + date
     },
     tooltip: {
       pointFormatter: function() {
@@ -108,9 +127,9 @@ function displayParameterMap(parameter) {
           enabled: true,
           format: "{point.value}"
       },
-      name: parameter,
+      name: loadParam1,
       data: paramData[date],
-      minSize: Math.max(0, parameterDatasets[parameter].minValue),
+      minSize: Math.max(0, parameterDatasets[loadParam1].minValue),
       maxSize: "12%",
       color: "#3E5E6D"
       }
@@ -120,7 +139,7 @@ function displayParameterMap(parameter) {
   $("#dateSlider").slider().on("slide", function(ev) {
     let dateSelected;
 
-    dateSelected = displayDate(parameterDatasets[parameter].dates[this.value]);
+    dateSelected = displayDate(parameterDatasets[loadParam1].dates[this.value]);
 
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
     chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
@@ -160,8 +179,9 @@ function parseCSV(data) {
       if (!parameterDatasets[paramName].hasOwnProperty("dates")) {
         parameterDatasets[paramName].dates = [];
       }
-
-      parameterDatasets[paramName].dates.push(new Date(date + "Z"));
+      if (parameterDatasets[paramName].dates.indexOf(new Date(date + "Z").valueOf()) === INVERSE) {
+        parameterDatasets[paramName].dates.push(new Date(date + "Z").valueOf());
+      }
 
       // test for min value
       if (!parameterDatasets[paramName].hasOwnProperty("minValue")) {
@@ -201,11 +221,34 @@ function updateChart(parameter) {
       success: function(data) {
         parseCSV(data);
         parameterDatasets[parameter].isLoaded = true;
-        displayParameterMap(parameter);
+        displayParameterMap();
         console.log(">>> [" + parameter + "] is loaded");
       }
     });
   }
+}
+
+function runAnimation() {
+  for (let i = 0; i === parameterDatasets[loadParam1].dates.length; i += 1) {
+    incrementDisplayDate(1);
+  }
+
+  let i = 0,
+      max = parameterDatasets[loadParam1].dates.length;
+      // max = 5;
+
+  console.log(max);
+
+  function repeat () {
+    setTimeout(function () {
+      if (isPlaying) {incrementDisplayDate(1);}
+      i += 1;
+      if (i < max && isPlaying) {repeat();} else {isPlaying = false;}
+    }, TIMEOUTSPEED);
+  }
+
+  repeat();
+
 }
 
 $(document).ready(function() {
@@ -220,4 +263,15 @@ $(document).ready(function() {
       chart.lab = null;
     }
   });
+
+  document.getElementById("playDateAnimation").addEventListener("click", function(event) {
+    if (!isPlaying) {
+      isPlaying = true;
+      runAnimation();
+    } else {
+      isPlaying = false;
+    }
+  });
+
+
 });
