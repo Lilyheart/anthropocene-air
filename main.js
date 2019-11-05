@@ -5,31 +5,65 @@ const XSHIFT = 5,
       YSHIFT = -200,
       DECIMALS = 2,
       MISSINGVALUE = -999,
+      TWODIGITDATE = 10,
+      INVERSE = -1,
       PRINTME = 100000000000;
 
 // Create array to store dataset information
 parameterDatasets = {
 ALf: {
   name: "Aluminum Fine",
-  filename: "data/ALf.csv",
-  isLoaded: false
+  filename: "data/ALf.csv"
 },
 NH4f: {
   name: "Ammonium Ion (Fine)",
-  filename: "data/NH4f.csv",
-  isLoaded: false
+  filename: "data/NH4f.csv"
 }};
 
 // Set default
 loadParam1 = Object.keys(parameterDatasets)[0];
 
 // Functions
+function displayDate(date) {
+  let dateString = "";
+
+  if ((date.getMonth() + 1) < TWODIGITDATE) {
+    dateString += 0;
+  }
+  dateString += (date.getMonth() + 1) + "/";
+
+  if (date.getDate() < TWODIGITDATE) {
+    dateString += 0;
+  }
+  dateString += (date.getDate() + 1) + "/" + date.getFullYear();
+
+  return dateString;
+}
+
 function displayParameterMap(parameter) {
   let paramData, date,
-      map = Highcharts.maps["countries/us/us-all"];
+      // map = Highcharts.maps["countries/us/us-all"];
+      map = Highcharts.maps["countries/us/custom/us-all-territories"];
 
   paramData = dataDictionary[parameter];
   date = Object.keys(paramData)[0];
+
+
+  parameterDatasets[parameter].dates.sort(function (date1, date2) {
+    if (date1 > date2) {
+      return 1;
+    }
+    if (date1 < date2) {
+      return INVERSE;
+    } else {
+      return 0;
+    }
+  });
+
+  $("#dateSlider").slider("setAttribute", "max", (parameterDatasets[parameter].dates.length - 1 - 1));
+  $("#dateSlider").on("slide", function(slideEvt) {
+    $("#dateSliderValue").text(displayDate(parameterDatasets[parameter].dates[slideEvt.value]));
+  });
 
   chart = Highcharts.mapChart("mapid", {
     title: {
@@ -40,7 +74,8 @@ function displayParameterMap(parameter) {
     },
     tooltip: {
       pointFormatter: function() {
-        return "Lat: " + this.lat + "<br>" +
+        return "Sitecode: " + this.sitecode + "<br>" +
+               "Lat: " + this.lat + "<br>" +
                "Lon: " + this.lon + "<br>" +
                "Value: " + this.z / PRINTME;
       },
@@ -82,13 +117,18 @@ function displayParameterMap(parameter) {
     ]
   });
 
-  // $("#slider").bind("input", function() {
-  //   chart.series[0].setData(data[+this.value].data);
-  // });
+  $("#dateSlider").slider().on("slide", function(ev) {
+    let dateSelected;
+
+    dateSelected = displayDate(parameterDatasets[parameter].dates[this.value]);
+
+    chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
+    chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
+  });
 }
 
 function parseCSV(data) {
-  let rawData, headers, chartData, lineData, paramName, date, value, lat, long,
+  let rawData, headers, lineData, chartData, paramName, siteCode, date, value, lat, long,
       minValue, maxValue;
 
   rawData = data.split("\n");
@@ -98,21 +138,30 @@ function parseCSV(data) {
   for (let i = 1; i < rawData.length; i += 1) {
     lineData = rawData[i].split(",");
 
-    date = lineData[0];
-    lat = parseFloat(lineData[1]);
-    long = parseFloat(lineData[2]);
+    siteCode = lineData[0];
+    date = lineData[1];
+    lat = parseFloat(lineData[2]);
+    long = parseFloat(lineData[3]);
 
     // for each parameter
-    for (let j = 3; j < headers.length; j += 1) {
+    for (let j = 4; j < headers.length; j += 1) {
       if (parseFloat(lineData[j]) === MISSINGVALUE) {
         break;
       }
-      
+
       chartData = {};
       paramName = headers[j].split(":")[0];
       chartData["z"] = lineData[j] * PRINTME;
       chartData["lat"] = lat;
       chartData["lon"] = long;
+      chartData["sitecode"] = siteCode;
+
+      // add date to slider array
+      if (!parameterDatasets[paramName].hasOwnProperty("dates")) {
+        parameterDatasets[paramName].dates = [];
+      }
+
+      parameterDatasets[paramName].dates.push(new Date(date + "Z"));
 
       // test for min value
       if (!parameterDatasets[paramName].hasOwnProperty("minValue")) {
@@ -160,6 +209,8 @@ function updateChart(parameter) {
 }
 
 $(document).ready(function() {
+
+  $("#dateSlider").slider();
 
   updateChart(loadParam1);
 
