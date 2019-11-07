@@ -41,12 +41,28 @@
       </div>
     </header>
     <div id="container" class="container-fluid">
-      <div id="mapid" class="mapid">
-
+      <div class="row">
+        <!-- Large screens 1/3 - 2/3, Small screens Stacked -->
+        <div class="col-md-2 col-sm-12">
+          <h3>Settings</h3>
+          <hr />
+          <h5>Parameter</h5>
+          <p>To Do</p>
+          <h5>Dates</h5>
+          <p>
+            <input id="dateSlider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="0"/>
+          </p>
+          <p>
+            <i id="playDateAnimation" class="fa fa-play"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span id="dateSliderLabel">&nbsp;&nbsp;<span id="dateSliderValue">0</span></span>
+          </p>
+          <h5>Playback Speed</h5>
+          <p>To Do</p>
+        </div>
+        <div class="col-md-10 col-sm-12">
+          <div id="mapid" class="mapid"></div>
+        </div>
       </div>
-      <i id="playDateAnimation" class="fa fa-play"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <input id="dateSlider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="0"/>
-      <span id="dateSliderLabel">&nbsp;&nbsp;Current Slider Value: <span id="dateSliderValue">0</span></span>
     </div>
     <!-- Script Libraries -->
     <!-- Bootstrap -->

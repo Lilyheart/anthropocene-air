@@ -28,7 +28,14 @@ body {
   color: gray;
 }
 .container-fluid {
+  height: calc(100% - 152px - 15px);
   padding-top: 15px;
+}
+.row {
+  height: 100%
+  // div {
+  //   height: 100%
+  // }
 }
 h1 {
   @extend %inverse-color-text;
@@ -109,11 +116,13 @@ a, a:hover {
   }
 }
 
-// MAP FORMATTING
+// Slider
 
-.container-fluid {
-  height: calc(100% - 144px - 40px);
+.slider.slider-horizontal {
+  width: 100%
 }
+
+// MAP FORMATTING
 
 .mapid {
   height: 100%;
