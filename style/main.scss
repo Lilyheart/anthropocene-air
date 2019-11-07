@@ -27,6 +27,9 @@ body {
   text-align: center;
   color: gray;
 }
+.container-fluid {
+  padding-top: 15px;
+}
 h1 {
   @extend %inverse-color-text;
   margin-bottom: 0;
@@ -44,13 +47,13 @@ a, a:hover {
 
 .stripe {
   @extend %primary-color-text;
-  height: 28px;
+  height: 32px;
   font-size: 16px;
   text-align: right;
-  .dropdown {
-    display: inline-block;
-    height: 100%;
-    position: relative;
+  &.text-center {
+    display: block;
+    height: 32px;
+    padding: 3px 15px;
   }
   button {
     @extend %primary-color-text;
@@ -64,6 +67,45 @@ a, a:hover {
   }
   button:hover {
     @extend %inverse-color-text;
+  }
+  .dropdown {
+    display: inline-block;
+    height: 100%;
+    position: relative;
+    &:hover .dropdown-content {
+      display: block;
+    }
+    a {
+      display: block;
+      height: 32px;
+      padding: 3px 15px;
+      &:hover {
+        background-color: $color-primary-4;
+        color: white;
+        text-decoration: none;
+      }
+    }
+    .dropdown-content {
+      display: none;
+      background-color: $color-secondary-2-1;
+      position: absolute;
+      width: 100%;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+      z-index: 10;
+      a {
+        display: block;
+        color: $color-primary-0-inverse;
+        padding: 7px 0;
+        text-decoration: none;
+        height: inherit;
+        width: 100%;
+        text-align: center;
+        &:hover {
+          background-color: $color-primary-4;
+          color: white;
+        }
+      }
+    }
   }
 }
 
