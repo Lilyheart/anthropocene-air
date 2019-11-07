@@ -141,7 +141,7 @@ function displayParameterMap() {
     ]
   });
 
-  $("#dateSlider").slider().on("slide", function(ev) {
+  $("#dateSlider").slider().on("slideStop", function(ev) {
     let dateSelected;
 
     dateSelected = displayDate(parameterDatasets[loadParam1].dates[this.value]);
@@ -179,6 +179,7 @@ function parseCSV(data) {
       chartData["lat"] = lat;
       chartData["lon"] = long;
       chartData["sitecode"] = siteCode;
+      chartData["id"] = siteCode;
 
       // add date to slider array
       if (!parameterDatasets[paramName].hasOwnProperty("dates")) {

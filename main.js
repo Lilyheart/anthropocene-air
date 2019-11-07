@@ -7,22 +7,25 @@ const XSHIFT = 5,
       MISSINGVALUE = -999,
       TWODIGITDATE = 10,
       INVERSE = -1,
-      TIMEOUTSPEED = 750,
-      PRINTME = 100000000000;
+      MINORTICKS = 5,
+      TIMEOUTSPEED = 750;
 
 // Create array to store dataset information
 parameterDatasets = {
 ALf: {
   name: "Aluminum Fine",
-  filename: "data/ALf.csv"
+  filename: "data/ALf.csv",
+  colorAxisType: "logarithmic"
 },
 NO3f: {
   name: "Nitrate (Fine)",
-  filename: "data/NO3f.csv"
+  filename: "data/NO3f.csv",
+  colorAxisType: "logarithmic"
 },
 NH4f: {
   name: "Ammonium Ion (Fine)",
-  filename: "data/NH4f.csv"
+  filename: "data/NH4f.csv",
+  colorAxisType: "logarithmic"
 }};
 
 // Set default
@@ -31,20 +34,7 @@ loadParam1 = "NO3f";
 
 // Functions
 function displayDate(UTCdate) {
-  let dateString = "",
-      date = new Date(UTCdate);
-
-  if ((date.getMonth() + 1) < TWODIGITDATE) {
-    dateString += 0;
-  }
-  dateString += (date.getMonth() + 1) + "/";
-
-  if (date.getDate() < TWODIGITDATE) {
-    dateString += 0;
-  }
-  dateString += (date.getDate() + 1) + "/" + date.getFullYear();
-
-  return dateString;
+  return new Date(UTCdate).toLocaleString("zu", {month: "2-digit", day: "2-digit", year: "numeric", timeZone: "UTC"});
 }
 
 function incrementDisplayDate(step) {
@@ -64,13 +54,11 @@ function incrementDisplayDate(step) {
 }
 
 function displayParameterMap() {
-  let paramData, date,
-      // map = Highcharts.maps["countries/us/us-all"];
-      map = Highcharts.maps["countries/us/custom/us-all-territories"];
+  let date,
+      map = Highcharts.maps["countries/us/custom/us-all-territories"],
+      maxValue = (parameterDatasets[loadParam1].maxValue * 0.5);
 
-  paramData = dataDictionary[loadParam1];
-  date = Object.keys(paramData)[0];
-
+  date = Object.keys(dataDictionary[loadParam1])[0];
 
   parameterDatasets[loadParam1].dates.sort(function (date1, date2) {
     if (date1 > date2) {
@@ -89,6 +77,65 @@ function displayParameterMap() {
   });
   incrementDisplayDate(0);
 
+  (function (HM) {
+    // Handle values for colorAxis
+    HM.seriesTypes.mappoint.prototype.axisTypes = ["xAxis", "yAxis", "colorAxis"];
+
+    HM.wrap(HM.seriesTypes.mappoint.prototype, "translate", function (proto) {
+        proto.call(this);
+        HM.seriesTypes.mappoint.prototype.translateColors.call(this);
+    });
+    HM.seriesTypes.mappoint.prototype.translateColors = HM.seriesTypes.heatmap.prototype.translateColors;
+    HM.seriesTypes.mappoint.prototype.colorKey = "value";
+
+    // Handle negative values in logarithmic
+    HM.addEvent(HM.ColorAxis, "init", function (ev) {
+        this.allowNegativeLog = ev.userOptions.allowNegativeLog;
+    });
+    // Override conversions
+    HM.wrap(HM.ColorAxis.prototype, "log2lin", function (proceed, num) {
+      var isNegative, adjustedNum, result;
+
+      if (!this.allowNegativeLog) {
+          return proceed.call(this, num);
+      }
+
+      isNegative = num < 0;
+      adjustedNum = Math.abs(num);
+      if (adjustedNum < TWODIGITDATE) {
+        adjustedNum += (TWODIGITDATE - adjustedNum) / TWODIGITDATE;
+      }
+      result = Math.log(adjustedNum) / Math.LN10;
+
+      if (isNegative) {
+        result *= INVERSE;
+      }
+
+      return result;
+    });
+
+    HM.wrap(HM.ColorAxis.prototype, "lin2log", function (proceed, num) {
+      var isNegative, absNum, result;
+
+      if (!this.allowNegativeLog) {
+          return proceed.call(this, num);
+      }
+
+      isNegative = num < 0;
+      absNum = Math.abs(num);
+      result = Math.pow(TWODIGITDATE, absNum);
+      if (result < TWODIGITDATE) {
+        result = (TWODIGITDATE * (result - 1)) / (TWODIGITDATE - 1);
+      }
+
+      if (isNegative) {
+        result *= INVERSE;
+      }
+
+      return result;
+    });
+  }(Highcharts));
+
   chart = Highcharts.mapChart("mapid", {
     title: {
       text: "Parameter Map"
@@ -97,19 +144,29 @@ function displayParameterMap() {
       text: parameterDatasets[loadParam1].name + " - " + date
     },
     tooltip: {
+      headerFormat: "",
       pointFormatter: function() {
-        return "Sitecode: " + this.sitecode + "<br>" +
+        return "<strong>" + parameterDatasets[loadParam1].name + "</strong><br>" +
+               "Value: " + this.value + "<br>----------------<br>" +
+               "Sitecode: " + this.sitecode + "<br>" +
                "Lat: " + this.lat + "<br>" +
-               "Lon: " + this.lon + "<br>" +
-               "Value: " + this.z / PRINTME;
-      },
-      shared: true
+               "Lon: " + this.lon + "<br>";
+      }
     },
     mapNavigation: {
         enabled: true,
         buttonOptions: {
             verticalAlign: "bottom"
         }
+    },
+    colorAxis: {
+      minColor: "#0000ff",
+      maxColor: "#ff0000",
+      min: 0,
+      max: maxValue,
+      type: parameterDatasets[loadParam1].colorAxisType,
+      allowNegativeLog: true,
+      minorTicks: true
     },
     series: [
       {
@@ -118,7 +175,8 @@ function displayParameterMap() {
         borderColor: "#606060",
         nullColor: "rgba(200, 200, 200, 0.2)",
         showInLegend: false
-      }, {
+      },
+      {
         // Alaska, Hawaii seperator line
         name: "Separators",
         type: "mapline",
@@ -126,26 +184,25 @@ function displayParameterMap() {
         color: "#101010",
         enableMouseTracking: false,
         showInLegend: false
-      }, {
-        type: "mapbubble",
-        dataLabels: {
-          enabled: true,
-          format: "{point.value}"
       },
-      name: loadParam1,
-      data: paramData[date],
-      minSize: Math.max(0, parameterDatasets[loadParam1].minValue),
-      maxSize: "12%",
-      color: "#3E5E6D"
+      {
+        type: "mappoint",
+        animation: false,
+        name: loadParam1,
+        data: dataDictionary[loadParam1][date],
+        dataLabels: {
+          enabled: false
+        }
       }
     ]
   });
 
-  $("#dateSlider").slider().on("slide", function(ev) {
+  $("#dateSlider").slider().on("slideStop", function(ev) {
     let dateSelected;
 
     dateSelected = displayDate(parameterDatasets[loadParam1].dates[this.value]);
 
+    $("#dateSliderValue").text(displayDate(parameterDatasets[loadParam1].dates[this.value]));
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
     chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
   });
@@ -153,7 +210,7 @@ function displayParameterMap() {
 
 function parseCSV(data) {
   let rawData, headers, lineData, chartData, paramName, siteCode, date, value, lat, long,
-      minValue, maxValue;
+      dateValue, minValue, maxValue;
 
   rawData = data.split("\n");
   headers = rawData[0].split(",");
@@ -175,31 +232,34 @@ function parseCSV(data) {
 
       chartData = {};
       paramName = headers[j].split(":")[0];
-      chartData["z"] = lineData[j] * PRINTME;
-      chartData["lat"] = lat;
-      chartData["lon"] = long;
       chartData["sitecode"] = siteCode;
+      chartData["id"] = siteCode;
+      chartData["lat"] = lat;
+      chartData["value"] = lineData[j];
+      chartData["lon"] = long;
+
+      dateValue = new Date(date + "Z").valueOf();
 
       // add date to slider array
       if (!parameterDatasets[paramName].hasOwnProperty("dates")) {
         parameterDatasets[paramName].dates = [];
       }
-      if (parameterDatasets[paramName].dates.indexOf(new Date(date + "Z").valueOf()) === INVERSE) {
-        parameterDatasets[paramName].dates.push(new Date(date + "Z").valueOf());
+      if (parameterDatasets[paramName].dates.indexOf(dateValue) === INVERSE) {
+        parameterDatasets[paramName].dates.push(dateValue);
       }
 
       // test for min value
       if (!parameterDatasets[paramName].hasOwnProperty("minValue")) {
-        parameterDatasets[paramName].minValue = chartData["z"];
-      } else if (chartData["z"] < parameterDatasets[paramName].minValue) {
-        parameterDatasets[paramName].minValue = chartData["z"];
+        parameterDatasets[paramName].minValue = chartData["value"];
+      } else if (chartData["value"] < parameterDatasets[paramName].minValue) {
+        parameterDatasets[paramName].minValue = chartData["value"];
       }
 
       // test for max value
       if (!parameterDatasets[paramName].hasOwnProperty("maxValue")) {
-        parameterDatasets[paramName].maxValue = chartData["z"];
-      } else if (chartData["z"] > parameterDatasets[paramName].maxValue) {
-        parameterDatasets[paramName].maxValue = chartData["z"];
+        parameterDatasets[paramName].maxValue = chartData["value"];
+      } else if (chartData["value"] > parameterDatasets[paramName].maxValue) {
+        parameterDatasets[paramName].maxValue = chartData["value"];
       }
 
       // if the parameter doesn't exist, create it
@@ -240,9 +300,6 @@ function runAnimation() {
 
   let i = 0,
       max = parameterDatasets[loadParam1].dates.length;
-      // max = 5;
-
-  console.log(max);
 
   function repeat () {
     setTimeout(function () {
