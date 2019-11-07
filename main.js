@@ -16,6 +16,10 @@ ALf: {
   name: "Aluminum Fine",
   filename: "data/ALf.csv"
 },
+NO3f: {
+  name: "Nitrate (Fine)",
+  filename: "data/NO3f.csv"
+},
 NH4f: {
   name: "Ammonium Ion (Fine)",
   filename: "data/NH4f.csv"
@@ -23,6 +27,7 @@ NH4f: {
 
 // Set default
 loadParam1 = Object.keys(parameterDatasets)[0];
+loadParam1 = "NO3f";
 
 // Functions
 function displayDate(UTCdate) {
