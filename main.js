@@ -51,7 +51,7 @@ function incrementDisplayDate(step) {
 }
 
 function displayParameterMap() {
-  let date, mapSeries,
+  let date, mapSeries, _tooltip,
       displayData = dataDictionary[loadParam1][Object.keys(dataDictionary[loadParam1])[0]].slice(),
       map = Highcharts.maps["countries/us/custom/us-all-territories"],
       maxValue = (parameterDatasets[loadParam1].maxValue * 0.5);
@@ -175,6 +175,10 @@ function displayParameterMap() {
 
   $("#dateSlider").slider("setAttribute", "max", (parameterDatasets[loadParam1].dates.length - 1 - 1));
   $("#dateSliderValue").text(Object.keys(dataDictionary[loadParam1])[0]);
+  $("#dateSlider").slider({
+    formatter: function (value) {return displayDate(parameterDatasets[loadParam1].dates[value]);},
+    tooltip_position: "right"
+  });
 
   $("#dateSlider").slider().on("slideStop", function(ev) {
     let dateSelected = displayDate(parameterDatasets[loadParam1].dates[this.value]);
@@ -183,6 +187,8 @@ function displayParameterMap() {
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
     chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
   });
+
+  incrementDisplayDate(0);
 }
 
 function parseCSV(data) {

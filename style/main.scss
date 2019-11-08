@@ -10,7 +10,12 @@
   color: $color-primary-0-inverse;
   background-color: $color-primary-0;
 }
-
+.tooltip.in {
+  opacity: 1;
+}
+.tooltip-inner{
+  margin-left: 50px;
+}
 /* Basic CSS Overloads */
 
 html {
