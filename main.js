@@ -1,5 +1,5 @@
 /*eslint id-length: ["error", { "exceptions": ["i", "j", "x", "y", "z"] }]*/
-var parameterDatasets, chart, loadParam1, loadParam2, isPlaying,
+var parameterDatasets, maptype, chart, loadParam1, loadParam2, isPlaying,
     dataDictionary = {};
 const XSHIFT = 5,
       YSHIFT = -200,
@@ -12,25 +12,22 @@ const XSHIFT = 5,
 
 // Create array to store dataset information
 parameterDatasets = {
-ALf: {
-  name: "Aluminum Fine",
-  filename: "data/ALf.csv",
-  colorAxisType: "logarithmic"
-},
-NO3f: {
-  name: "Nitrate (Fine)",
-  filename: "data/NO3f.csv",
-  colorAxisType: "logarithmic"
-},
-NH4f: {
-  name: "Ammonium Ion (Fine)",
-  filename: "data/NH4f.csv",
-  colorAxisType: "logarithmic"
-}};
-
-// Set default
-loadParam1 = Object.keys(parameterDatasets)[0];
-loadParam1 = "NO3f";
+  NO3f: {
+    name: "Nitrate (Fine)",
+    filename: "data/NO3f.csv",
+    colorAxisType: "logarithmic"
+  },
+  NH4f: {
+    name: "Ammonium Ion (Fine)",
+    filename: "data/NH4f.csv",
+    colorAxisType: "logarithmic"
+  },
+  ALf: {
+    name: "Aluminum Fine",
+    filename: "data/ALf.csv",
+    colorAxisType: "logarithmic"
+  }
+};
 
 // Functions
 function displayDate(UTCdate) {
@@ -49,33 +46,15 @@ function incrementDisplayDate(step) {
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
     chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
   } catch (error) {
-    //
+    return;
   }
 }
 
 function displayParameterMap() {
-  let date,
+  let date, mapSeries,
+      displayData = dataDictionary[loadParam1][Object.keys(dataDictionary[loadParam1])[0]].slice(),
       map = Highcharts.maps["countries/us/custom/us-all-territories"],
       maxValue = (parameterDatasets[loadParam1].maxValue * 0.5);
-
-  date = Object.keys(dataDictionary[loadParam1])[0];
-
-  parameterDatasets[loadParam1].dates.sort(function (date1, date2) {
-    if (date1 > date2) {
-      return 1;
-    }
-    if (date1 < date2) {
-      return INVERSE;
-    } else {
-      return 0;
-    }
-  });
-
-  $("#dateSlider").slider("setAttribute", "max", (parameterDatasets[loadParam1].dates.length - 1 - 1));
-  $("#dateSlider").on("slide", function(slideEvt) {
-    $("#dateSliderValue").text(displayDate(parameterDatasets[loadParam1].dates[slideEvt.value]));
-  });
-  incrementDisplayDate(0);
 
   (function (HM) {
     // Handle values for colorAxis
@@ -89,27 +68,19 @@ function displayParameterMap() {
     HM.seriesTypes.mappoint.prototype.colorKey = "value";
 
     // Handle negative values in logarithmic
-    HM.addEvent(HM.ColorAxis, "init", function (ev) {
-        this.allowNegativeLog = ev.userOptions.allowNegativeLog;
-    });
+    HM.addEvent(HM.ColorAxis, "init", function (ev) {this.allowNegativeLog = ev.userOptions.allowNegativeLog;});
     // Override conversions
     HM.wrap(HM.ColorAxis.prototype, "log2lin", function (proceed, num) {
       var isNegative, adjustedNum, result;
 
-      if (!this.allowNegativeLog) {
-          return proceed.call(this, num);
-      }
+      if (!this.allowNegativeLog) {return proceed.call(this, num);}
 
       isNegative = num < 0;
       adjustedNum = Math.abs(num);
-      if (adjustedNum < TWODIGITDATE) {
-        adjustedNum += (TWODIGITDATE - adjustedNum) / TWODIGITDATE;
-      }
+      if (adjustedNum < TWODIGITDATE) {adjustedNum += (TWODIGITDATE - adjustedNum) / TWODIGITDATE;}
       result = Math.log(adjustedNum) / Math.LN10;
 
-      if (isNegative) {
-        result *= INVERSE;
-      }
+      if (isNegative) {result *= INVERSE;}
 
       return result;
     });
@@ -117,38 +88,52 @@ function displayParameterMap() {
     HM.wrap(HM.ColorAxis.prototype, "lin2log", function (proceed, num) {
       var isNegative, absNum, result;
 
-      if (!this.allowNegativeLog) {
-          return proceed.call(this, num);
-      }
+      if (!this.allowNegativeLog) {return proceed.call(this, num);}
 
       isNegative = num < 0;
       absNum = Math.abs(num);
       result = Math.pow(TWODIGITDATE, absNum);
-      if (result < TWODIGITDATE) {
-        result = (TWODIGITDATE * (result - 1)) / (TWODIGITDATE - 1);
-      }
+      if (result < TWODIGITDATE) {result = (TWODIGITDATE * (result - 1)) / (TWODIGITDATE - 1);}
 
-      if (isNegative) {
-        result *= INVERSE;
-      }
+      if (isNegative) {result *= INVERSE;}
 
       return result;
     });
   }(Highcharts));
+
+  if (maptype === "mappoint") {
+    mapSeries = {
+      type: "mappoint",
+      animation: false,
+      name: loadParam1,
+      data: displayData,
+      dataLabels: {enabled: false}
+    };
+  } else if (maptype === "mapbubble") {
+    mapSeries = {
+      type: "mapbubble",
+      name: loadParam1,
+      data: displayData,
+      minSize: Math.max(0, parameterDatasets[loadParam1].minValue),
+      maxSize: "12%",
+      color: "#3E5E6D",
+      dataLabels: {enabled: false}
+    };
+  }
 
   chart = Highcharts.mapChart("mapid", {
     title: {
       text: "Parameter Map"
     },
     subtitle: {
-      text: parameterDatasets[loadParam1].name + " - " + date
+      text: parameterDatasets[loadParam1].name + " - " + Object.keys(dataDictionary[loadParam1])[0]
     },
     tooltip: {
       headerFormat: "",
       pointFormatter: function() {
         return "<strong>" + parameterDatasets[loadParam1].name + "</strong><br>" +
                "Value: " + this.value + "<br>----------------<br>" +
-               "Sitecode: " + this.sitecode + "<br>" +
+               "Sitecode: " + this.id + "<br>" +
                "Lat: " + this.lat + "<br>" +
                "Lon: " + this.lon + "<br>";
       }
@@ -175,8 +160,7 @@ function displayParameterMap() {
         borderColor: "#606060",
         nullColor: "rgba(200, 200, 200, 0.2)",
         showInLegend: false
-      },
-      {
+      }, {
         // Alaska, Hawaii seperator line
         name: "Separators",
         type: "mapline",
@@ -185,22 +169,15 @@ function displayParameterMap() {
         enableMouseTracking: false,
         showInLegend: false
       },
-      {
-        type: "mappoint",
-        animation: false,
-        name: loadParam1,
-        data: dataDictionary[loadParam1][date],
-        dataLabels: {
-          enabled: false
-        }
-      }
+        mapSeries
     ]
   });
 
-  $("#dateSlider").slider().on("slideStop", function(ev) {
-    let dateSelected;
+  $("#dateSlider").slider("setAttribute", "max", (parameterDatasets[loadParam1].dates.length - 1 - 1));
+  $("#dateSliderValue").text(Object.keys(dataDictionary[loadParam1])[0]);
 
-    dateSelected = displayDate(parameterDatasets[loadParam1].dates[this.value]);
+  $("#dateSlider").slider().on("slideStop", function(ev) {
+    let dateSelected = displayDate(parameterDatasets[loadParam1].dates[this.value]);
 
     $("#dateSliderValue").text(displayDate(parameterDatasets[loadParam1].dates[this.value]));
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
@@ -209,37 +186,41 @@ function displayParameterMap() {
 }
 
 function parseCSV(data) {
-  let rawData, headers, lineData, chartData, paramName, siteCode, date, value, lat, long,
-      dateValue, minValue, maxValue;
+  let rawData, headers, lineData, chartData, paramName, siteCode,
+      date, value, lat, long, dateValue, minValue, maxValue,
+      paramList = [];
 
   rawData = data.split("\n");
   headers = rawData[0].split(",");
 
+  for (let j = 4; j < headers.length; j += 1) {
+    paramList.push(headers[j].split(":")[0]);
+  }
+
   // for each row of data
-  for (let i = 1; i < rawData.length; i += 1) {
+  for (let i = 1; i < (rawData.length - 1); i += 1) {
     lineData = rawData[i].split(",");
 
     siteCode = lineData[0];
     date = lineData[1];
+    dateValue = new Date(date + "Z").valueOf();
     lat = parseFloat(lineData[2]);
     long = parseFloat(lineData[3]);
 
     // for each parameter
     for (let j = 4; j < headers.length; j += 1) {
-      if (parseFloat(lineData[j]) === MISSINGVALUE) {
-        break;
-      }
+      if (parseFloat(lineData[j]) === MISSINGVALUE) {break;}
+
+      value = Math.max(0, parseFloat(lineData[j]));
 
       chartData = {};
-      paramName = headers[j].split(":")[0];
-      chartData["sitecode"] = siteCode;
+
       chartData["id"] = siteCode;
+      chartData["value"] = chartData["z"] = value;
       chartData["lat"] = lat;
-      chartData["value"] = lineData[j];
       chartData["lon"] = long;
 
-      dateValue = new Date(date + "Z").valueOf();
-
+      paramName = headers[j].split(":")[0];
       // add date to slider array
       if (!parameterDatasets[paramName].hasOwnProperty("dates")) {
         parameterDatasets[paramName].dates = [];
@@ -248,18 +229,12 @@ function parseCSV(data) {
         parameterDatasets[paramName].dates.push(dateValue);
       }
 
-      // test for min value
-      if (!parameterDatasets[paramName].hasOwnProperty("minValue")) {
-        parameterDatasets[paramName].minValue = chartData["value"];
-      } else if (chartData["value"] < parameterDatasets[paramName].minValue) {
-        parameterDatasets[paramName].minValue = chartData["value"];
+      // test for min/max value
+      if (value < parameterDatasets[paramName].minValue || !parameterDatasets[paramName].minValue) {
+        parameterDatasets[paramName].minValue = value;
       }
-
-      // test for max value
-      if (!parameterDatasets[paramName].hasOwnProperty("maxValue")) {
-        parameterDatasets[paramName].maxValue = chartData["value"];
-      } else if (chartData["value"] > parameterDatasets[paramName].maxValue) {
-        parameterDatasets[paramName].maxValue = chartData["value"];
+      if (value > parameterDatasets[paramName].maxValue || !parameterDatasets[paramName].maxValue) {
+        parameterDatasets[paramName].maxValue = value;
       }
 
       // if the parameter doesn't exist, create it
@@ -275,30 +250,43 @@ function parseCSV(data) {
       }
     }
   }
+
+  for (let param in paramList) {
+    if (paramList.hasOwnProperty(param)) {
+      parameterDatasets[paramList[param]].dates.sort(function (date1, date2) {
+        if (date1 > date2) {return 1;}
+        if (date1 < date2) {return INVERSE;}
+
+        return 0;
+      });
+    }
+  }
 }
 
 function updateChart(parameter) {
+  isPlaying = false;
+  loadParam1 = parameter;
+  $("#dateSlider").slider("setValue", 0);
+
   if (!parameterDatasets[parameter].isLoaded) {
+    chart = Highcharts.mapChart("mapid", {title: {text: "Loading Map"}});
     $.ajax({
       type: "GET",
       url: parameterDatasets[parameter].filename,
       dataType: "text",
       success: function(data) {
-        parseCSV(data);
         parameterDatasets[parameter].isLoaded = true;
+        parseCSV(data);
         displayParameterMap();
-        console.log(">>> [" + parameter + "] is loaded");
       }
     });
+  } else {
+    displayParameterMap();
   }
 }
 
 function runAnimation() {
-  for (let i = 0; i === parameterDatasets[loadParam1].dates.length; i += 1) {
-    incrementDisplayDate(1);
-  }
-
-  let i = 0,
+  let i = $("#dateSlider").slider("getValue"),
       max = parameterDatasets[loadParam1].dates.length;
 
   function repeat () {
@@ -310,14 +298,25 @@ function runAnimation() {
   }
 
   repeat();
-
 }
 
 $(document).ready(function() {
+  let defaultParam = Object.keys(parameterDatasets)[0];
+
+  maptype = "mapbubble";
+  maptype = "mappoint";
 
   $("#dateSlider").slider();
 
-  updateChart(loadParam1);
+  $("#parameter-dropdown").selectize({});
+  for (let key in parameterDatasets) {
+    if (parameterDatasets.hasOwnProperty(key)) {
+      $("#parameter-dropdown")[0].selectize.addOption({value: key, text: parameterDatasets[key].name});
+    }
+  }
+  $("#parameter-dropdown").selectize()[0].selectize.setValue(defaultParam, true);
+
+  updateChart(defaultParam);
 
   document.getElementById("mapid").addEventListener("mouseout", function () {
     if (chart && chart.lab) {
@@ -334,6 +333,5 @@ $(document).ready(function() {
       isPlaying = false;
     }
   });
-
 
 });
