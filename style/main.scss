@@ -121,6 +121,43 @@ a, a:hover {
   }
 }
 
+// button
+
+button.btn-primary {
+  justify-content: center;
+  font-weight: bold;
+  letter-spacing: 2px;
+  transition: all .2s;
+
+  /* Default with add specificites for nonsense */
+  &, &.active, &.btn:not(.disabled):active {
+    @extend %inverse-color-text;
+    border-color: $color-primary-0;
+  }
+  &.btn {
+    font-weight: bold;
+    letter-spacing: 3px;
+  }
+  &:not(.active):not(button) {
+    background-color: $color-primary-4;
+    border-color: $color-primary-4;
+    color: $color-primary-3;
+  }
+  &.disabled:not(button), &:disabled {
+    background-color: $color-primary-0-disabled;
+    border-color: $color-primary-0-disabled;
+    color: $color-primary-3;
+  }
+  &:not(.active):not(:disabled) {
+    #{$selected} {
+      background-color: $color-secondary-2-0;
+      border-color: $color-secondary-2-0;
+      color: $color-primary-0-inverse;
+      text-decoration: none;
+    }
+  }
+}
+
 // Slider
 
 .slider.slider-horizontal {

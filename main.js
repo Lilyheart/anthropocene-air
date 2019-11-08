@@ -319,7 +319,6 @@ function runAnimation() {
 $(document).ready(function() {
   let defaultParam = Object.keys(parameterDatasets)[0];
 
-  maptype = "mapbubble";
   maptype = "mappoint";
 
   $("#dateSlider").slider();
@@ -348,6 +347,24 @@ $(document).ready(function() {
     } else {
       isPlaying = false;
     }
+  });
+
+  document.getElementById("point").addEventListener("click", function(event) {
+    maptype = "mappoint";
+    document.getElementById("point").classList.add("btn-primary");
+    document.getElementById("point").classList.remove("btn-secondary");
+    document.getElementById("bubble").classList.remove("btn-primary");
+    document.getElementById("bubble").classList.add("btn-secondary");
+    updateChart(loadParam1);
+  });
+
+  document.getElementById("bubble").addEventListener("click", function(event) {
+    maptype = "mapbubble";
+    document.getElementById("point").classList.remove("btn-primary");
+    document.getElementById("point").classList.add("btn-secondary");
+    document.getElementById("bubble").classList.add("btn-primary");
+    document.getElementById("bubble").classList.remove("btn-secondary");
+    updateChart(loadParam1);
   });
 
 });
