@@ -41,7 +41,6 @@ function incrementDisplayDate(step) {
   dateSelected = displayDate(parameterDatasets[loadParam1].dates[newIndex]);
 
   $("#dateSlider").slider("setValue", newIndex);
-  $("#dateSliderValue").text(displayDate(parameterDatasets[loadParam1].dates[newIndex]));
   try {
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
     chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
@@ -145,8 +144,19 @@ function displayParameterMap() {
         }
     },
     colorAxis: {
-      minColor: "#0000ff",
-      maxColor: "#ff0000",
+      stops: [
+        /* eslint-disable */
+        [0.00, "#00007F"],
+        [0.05, "#0000ff"],
+        [0.10, "#007FFF"],
+        [0.15, "#0dd6d6"],
+        [0.32, "#7FFF7F"],
+        [0.49, "#ffff00"],
+        [0.66, "#FF7F00"],
+        [0.83, "#ff0000"],
+        [1.00, "#7F0000"]
+        /* eslint-enable */
+      ],
       min: 0,
       max: maxValue,
       type: parameterDatasets[loadParam1].colorAxisType,
@@ -173,17 +183,15 @@ function displayParameterMap() {
     ]
   });
 
-  $("#dateSlider").slider("setAttribute", "max", (parameterDatasets[loadParam1].dates.length - 1 - 1));
-  $("#dateSliderValue").text(Object.keys(dataDictionary[loadParam1])[0]);
+  $("#dateSlider").slider("destroy");
   $("#dateSlider").slider({
-    formatter: function (value) {return displayDate(parameterDatasets[loadParam1].dates[value]);},
-    tooltip_position: "right"
+    formatter: function (value) {return displayDate(parameterDatasets[loadParam1].dates[value]);}
   });
+  $("#dateSlider").slider("setAttribute", "max", (parameterDatasets[loadParam1].dates.length - 1 - 1));
 
   $("#dateSlider").slider().on("slideStop", function(ev) {
     let dateSelected = displayDate(parameterDatasets[loadParam1].dates[this.value]);
 
-    $("#dateSliderValue").text(displayDate(parameterDatasets[loadParam1].dates[this.value]));
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
     chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
   });
@@ -272,7 +280,6 @@ function parseCSV(data) {
 function updateChart(parameter) {
   isPlaying = false;
   loadParam1 = parameter;
-  $("#dateSlider").slider("setValue", 0);
 
   if (!parameterDatasets[parameter].isLoaded) {
     chart = Highcharts.mapChart("mapid", {title: {text: "Loading Map"}});
@@ -281,6 +288,9 @@ function updateChart(parameter) {
       url: parameterDatasets[parameter].filename,
       dataType: "text",
       success: function(data) {
+        $("#dateSlider").slider("destroy");
+        $("#dateSlider").slider();
+        $("#dateSlider").slider("setValue", 0);
         parameterDatasets[parameter].isLoaded = true;
         parseCSV(data);
         displayParameterMap();
