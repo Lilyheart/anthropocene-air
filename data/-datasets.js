@@ -13,6 +13,13 @@ parameterDatasets = {
     percentileBottom: 0,
     percentileTop: 2.98
   },
+  dv: {
+    name: "Deciview",
+    filename: "data/deciview.csv",
+    unit: "dv",
+    percentileBottom: 0,
+    percentileTop: 28.14
+  },
   NO3f: {
     name: "Nitrate (Fine)",
     filename: "data/NO3f.csv",
@@ -25,6 +32,6 @@ parameterDatasets = {
     filename: "data/SO4f.csv",
     unit: "µg/m<super>3</super> LC",
     percentileBottom: 0,
-    percentileTop: 4.16
+    percentileTop: 6.57
   }
 };
