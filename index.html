@@ -9,8 +9,7 @@
     <!-- Fonts -->
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Bootstrap -->
+    <script src="https://kit.fontawesome.com/5a5642637a.js" crossorigin="anonymous"></script>    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="libraries/bootstrap-slider.min.css" media="screen" title="no title" charset="utf-8">
     <!-- Leaflet -->
@@ -55,11 +54,26 @@
             <input id="dateSlider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="0"/>
           </p>
           <h5>Playback</h5>
+          <p class="playback text-center">
+            <span onclick="">
+              <i id="datePlayRR" class="fas fa-angle-double-left fa-lg disabled"></i>
+            </span>
+            <span onclick="runAnimation('reverse')">
+              <i id="datePlayR" class="fas fa-play fa-lg" data-fa-transform="rotate-180" ></i>
+            </span>
+            <span onclick="runAnimation('none')">
+              <i id="datePlayStop" class="fas fa-stop fa-lg disabled"></i>
+            </span>
+            <span onclick="runAnimation('forward')">
+              <i id="datePlayF" class="fas fa-play fa-lg"></i>
+            </span>
+            <span onclick="">
+              <i id="datePlayFF" class="fas fa-angle-double-right fa-lg disabled"></i>
+            </span>
+          </p>
           <p class="playback">
-            <i id="playDateAnimation" class="fa fa-play"></i>
             <input id="speedSlider" type="text" data-slider-min="1" data-slider-max="2001" data-slider-step="100" data-slider-value="1001" data-slider-tooltip="hide" data-slider-rtl="right"/>
           </p>
-          <p>To Do</p>
           <h5>Map Types</h5>
           <button id="point" type="button" class="btn btn-primary btn-block">Map Point</button>
           <button id="bubble" type="button" class="btn btn-secondary btn-block">Map Bubble</button>
@@ -70,6 +84,8 @@
       </div>
     </div>
     <!-- Script Libraries -->
+    <!-- Fontawesome -->
+    <script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js" integrity="sha384-b3ua1l97aVGAPEIe48b4TC60WUQbQaGi2jqAWM90y0OZXZeyaTCWtBTKtjW2GXG1" crossorigin="anonymous"></script>
     <!-- Bootstrap -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -83,6 +99,7 @@
     <script src="https://code.highcharts.com/mapdata/countries/us/custom/us-all-territories.js"></script>
     <!-- Local -->
     <script type="text/javascript" src="libraries/selectize.min.js"></script>
+    <script type="text/javascript" src="data/-datasets.js"></script>
     <script type="text/javascript" src="main.js"></script>
     <span>
     </span>

@@ -181,3 +181,22 @@ button.btn-primary {
   height: 100%;
   width: 100%;
 }
+
+// Playback
+
+.playback {
+  display : flex;
+  width : 100%;
+  padding-top: 10px;
+  justify-content : space-between;
+  align-items: center;
+}
+
+.fa-lg {
+  &.disabled {
+    color: $color-primary-0-disabled;
+  }
+  &.active {
+    color: $color-primary-4;
+  }
+}

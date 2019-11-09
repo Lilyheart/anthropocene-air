@@ -1,7 +1,8 @@
 /*eslint id-length: ["error", { "exceptions": ["i", "j", "x", "y", "z"] }]*/
-var parameterDatasets, maptype, chart, loadParam1, loadParam2, isPlaying,
+var parameterDatasets, maptype, chart, loadParam1, loadParam2, playDirection,
     dataDictionary = {},
-    timeoutSpeed = 750;
+    timeoutSpeed = 750,
+    dropSiteCodes = ["EGBE1", "BYISX", "BYIS1", "BALA1"];
 const XSHIFT = 5,
       YSHIFT = -200,
       DECIMALS = 2,
@@ -9,25 +10,6 @@ const XSHIFT = 5,
       TWODIGITDATE = 10,
       INVERSE = -1,
       MINORTICKS = 5;
-
-// Create array to store dataset information
-parameterDatasets = {
-  NO3f: {
-    name: "Nitrate (Fine)",
-    filename: "data/NO3f.csv",
-    colorAxisType: "logarithmic"
-  },
-  NH4f: {
-    name: "Ammonium Ion (Fine)",
-    filename: "data/NH4f.csv",
-    colorAxisType: "logarithmic"
-  },
-  ALf: {
-    name: "Aluminum Fine",
-    filename: "data/ALf.csv",
-    colorAxisType: "logarithmic"
-  }
-};
 
 // Functions
 function displayDate(UTCdate) {
@@ -53,7 +35,7 @@ function displayParameterMap() {
   let date, mapSeries, _tooltip,
       displayData = dataDictionary[loadParam1][Object.keys(dataDictionary[loadParam1])[0]].slice(),
       map = Highcharts.maps["countries/us/custom/us-all-territories"],
-      maxValue = (parameterDatasets[loadParam1].maxValue * 0.5);
+      maxValue = (parameterDatasets[loadParam1].maxValue);
 
   (function (HM) {
     // Handle values for colorAxis
@@ -216,6 +198,8 @@ function parseCSV(data) {
     lineData = rawData[i].split(",");
 
     siteCode = lineData[0];
+    if (dropSiteCodes.includes(siteCode)) {continue;}
+
     date = lineData[1];
     dateValue = new Date(date + "Z").valueOf();
     lat = parseFloat(lineData[2]);
@@ -223,7 +207,7 @@ function parseCSV(data) {
 
     // for each parameter
     for (let j = 4; j < headers.length; j += 1) {
-      if (parseFloat(lineData[j]) === MISSINGVALUE) {break;}
+      if (parseFloat(lineData[j]) === MISSINGVALUE) {continue;}
 
       value = Math.max(0, parseFloat(lineData[j]));
 
@@ -277,8 +261,65 @@ function parseCSV(data) {
   }
 }
 
+function runAnimation(direction) {
+  let step,
+      i = $("#dateSlider").slider("getValue"),
+      max = 0;
+
+  if (loadParam1) {
+    max = parameterDatasets[loadParam1].dates.length;
+  }
+
+  function repeat (oneTimeout) {
+    setTimeout(function () {
+      if (playDirection === "forward") {
+        step = 1;
+      } else if (playDirection === "reverse") {
+        step = INVERSE;
+      } else {step = 0;}
+
+      incrementDisplayDate(step);
+      i += step;
+
+      if (0 < i && i < max && playDirection !== "none") {
+        repeat(timeoutSpeed);
+      } else {
+        playDirection = "none";
+        document.getElementById("datePlayStop").classList.add("disabled");
+        document.getElementById("datePlayR").classList.remove("active");
+        document.getElementById("datePlayF").classList.remove("active");
+      }
+    }, oneTimeout);
+  }
+
+  // Run if stopped
+  if (playDirection === "none" && direction !== playDirection) {
+    playDirection = direction;
+    repeat(timeoutSpeed);
+  } else {
+    playDirection = direction;
+  }
+
+  // toggle buttons
+  if (playDirection !== "none") {
+    document.getElementById("datePlayStop").classList.remove("disabled");
+  } else {
+    document.getElementById("datePlayStop").classList.add("disabled");
+  }
+  if (playDirection === "forward") {
+    document.getElementById("datePlayF").classList.add("active");
+  } else {
+    document.getElementById("datePlayF").classList.remove("active");
+  }
+  if (playDirection === "reverse") {
+    document.getElementById("datePlayR").classList.add("active");
+  } else {
+    document.getElementById("datePlayR").classList.remove("active");
+  }
+}
+
 function updateChart(parameter) {
-  isPlaying = false;
+  runAnimation("none");
   loadParam1 = parameter;
 
   if (!parameterDatasets[parameter].isLoaded) {
@@ -299,21 +340,6 @@ function updateChart(parameter) {
   } else {
     displayParameterMap();
   }
-}
-
-function runAnimation() {
-  let i = $("#dateSlider").slider("getValue"),
-      max = parameterDatasets[loadParam1].dates.length;
-
-  function repeat (oneTimeout) {
-    setTimeout(function () {
-      if (isPlaying) {incrementDisplayDate(1);}
-      i += 1;
-      if (i < max && isPlaying) {repeat(timeoutSpeed);} else {isPlaying = false;}
-    }, oneTimeout);
-  }
-
-  repeat(timeoutSpeed);
 }
 
 $(document).ready(function() {
@@ -338,15 +364,6 @@ $(document).ready(function() {
     if (chart && chart.lab) {
       chart.lab.destroy();
       chart.lab = null;
-    }
-  });
-
-  document.getElementById("playDateAnimation").addEventListener("click", function(event) {
-    if (!isPlaying) {
-      isPlaying = true;
-      runAnimation();
-    } else {
-      isPlaying = false;
     }
   });
 

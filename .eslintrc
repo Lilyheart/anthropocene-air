@@ -14,6 +14,7 @@
     "document": true,
 
     # var variables
+    "parameterDatasets": true,
 
     # const variables
 
