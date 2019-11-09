@@ -51,12 +51,13 @@
           <select id="parameter-dropdown" class="align-self-center" placeholder="Start typing parameter..." name="parameter_id"   onchange="updateChart(this.value)">
           </select>
           <h5>Dates</h5>
-          <p>
+          <p class="dates">
             <input id="dateSlider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="0"/>
           </p>
           <h5>Playback</h5>
-          <p>
-            <i id="playDateAnimation" class="fa fa-play"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <p class="playback">
+            <i id="playDateAnimation" class="fa fa-play"></i>
+            <input id="speedSlider" type="text" data-slider-min="1" data-slider-max="2001" data-slider-step="100" data-slider-value="1001" data-slider-tooltip="hide" data-slider-rtl="right"/>
           </p>
           <p>To Do</p>
           <h5>Map Types</h5>

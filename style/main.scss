@@ -10,12 +10,7 @@
   color: $color-primary-0-inverse;
   background-color: $color-primary-0;
 }
-.tooltip.in {
-  opacity: 1;
-}
-.tooltip-inner{
-  margin-left: 50px;
-}
+
 /* Basic CSS Overloads */
 
 html {
@@ -160,8 +155,24 @@ button.btn-primary {
 
 // Slider
 
-.slider.slider-horizontal {
-  width: 100%
+.dates {
+  .slider {
+    &.slider-horizontal {
+      width: 100%
+    }
+    .tooltip {
+      &.in {
+        opacity: 1;
+      }
+      .tooltip-inner{
+        margin-left: 50px;
+      }
+    }
+  }
+}
+.slider-handle {
+  background-color: $color-primary-4;
+  background-image: -webkit-linear-gradient(top, $color-primary-3 0, $color-primary-4 100%);
 }
 
 // MAP FORMATTING

@@ -1,14 +1,14 @@
 /*eslint id-length: ["error", { "exceptions": ["i", "j", "x", "y", "z"] }]*/
 var parameterDatasets, maptype, chart, loadParam1, loadParam2, isPlaying,
-    dataDictionary = {};
+    dataDictionary = {},
+    timeoutSpeed = 750;
 const XSHIFT = 5,
       YSHIFT = -200,
       DECIMALS = 2,
       MISSINGVALUE = -999,
       TWODIGITDATE = 10,
       INVERSE = -1,
-      MINORTICKS = 5,
-      TIMEOUTSPEED = 750;
+      MINORTICKS = 5;
 
 // Create array to store dataset information
 parameterDatasets = {
@@ -305,15 +305,15 @@ function runAnimation() {
   let i = $("#dateSlider").slider("getValue"),
       max = parameterDatasets[loadParam1].dates.length;
 
-  function repeat () {
+  function repeat (oneTimeout) {
     setTimeout(function () {
       if (isPlaying) {incrementDisplayDate(1);}
       i += 1;
-      if (i < max && isPlaying) {repeat();} else {isPlaying = false;}
-    }, TIMEOUTSPEED);
+      if (i < max && isPlaying) {repeat(timeoutSpeed);} else {isPlaying = false;}
+    }, oneTimeout);
   }
 
-  repeat();
+  repeat(timeoutSpeed);
 }
 
 $(document).ready(function() {
@@ -322,6 +322,7 @@ $(document).ready(function() {
   maptype = "mappoint";
 
   $("#dateSlider").slider();
+  $("#speedSlider").slider({tooltip: "never"});
 
   $("#parameter-dropdown").selectize({});
   for (let key in parameterDatasets) {
@@ -367,4 +368,7 @@ $(document).ready(function() {
     updateChart(loadParam1);
   });
 
+  $("#speedSlider").slider().on("slideStop", function(ev) {
+    timeoutSpeed = this.value;
+  });
 });
