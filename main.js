@@ -215,8 +215,9 @@ function parseCSV(data) {
       chartData = {};
 
       chartData["id"] = siteCode;
-      displayValue = Math.min(value, parameterDatasets[loadParam1].percentile95) * COLORaxisSCALE;
-      chartData["value"] = chartData["z"] = displayValue;
+      displayValue = Math.max(value, parameterDatasets[loadParam1].percentileBottom);
+      displayValue = Math.min(displayValue, parameterDatasets[loadParam1].percentileTop);
+      chartData["value"] = chartData["z"] = (displayValue * COLORaxisSCALE);
       chartData["actual"] = value;
       chartData["lat"] = lat;
       chartData["lon"] = long;
