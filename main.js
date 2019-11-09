@@ -3,13 +3,10 @@ var parameterDatasets, maptype, chart, loadParam1, loadParam2, playDirection,
     dataDictionary = {},
     timeoutSpeed = 750,
     dropSiteCodes = ["EGBE1", "BYISX", "BYIS1", "BALA1"];
-const XSHIFT = 5,
-      YSHIFT = -200,
-      DECIMALS = 2,
-      MISSINGVALUE = -999,
+const MISSINGVALUE = -999,
       TWODIGITDATE = 10,
       INVERSE = -1,
-      MINORTICKS = 5;
+      COLORaxisSCALE = 100;
 
 // Functions
 function displayDate(UTCdate) {
@@ -32,10 +29,9 @@ function incrementDisplayDate(step) {
 }
 
 function displayParameterMap() {
-  let date, mapSeries, _tooltip,
+  let mapSeries,
       displayData = dataDictionary[loadParam1][Object.keys(dataDictionary[loadParam1])[0]].slice(),
-      map = Highcharts.maps["countries/us/custom/us-all-territories"],
-      maxValue = (parameterDatasets[loadParam1].maxValue);
+      map = Highcharts.maps["countries/us/custom/us-all-territories"];
 
   (function (HM) {
     // Handle values for colorAxis
@@ -113,7 +109,7 @@ function displayParameterMap() {
       headerFormat: "",
       pointFormatter: function() {
         return "<strong>" + parameterDatasets[loadParam1].name + "</strong><br>" +
-               "Value: " + this.value + "<br>----------------<br>" +
+               "Value: " + this.actual + "<br>----------------<br>" +
                "Sitecode: " + this.id + "<br>" +
                "Lat: " + this.lat + "<br>" +
                "Lon: " + this.lon + "<br>";
@@ -139,11 +135,16 @@ function displayParameterMap() {
         [1.00, "#7F0000"]
         /* eslint-enable */
       ],
-      min: 0,
-      max: maxValue,
-      type: parameterDatasets[loadParam1].colorAxisType,
-      allowNegativeLog: true,
-      minorTicks: true
+      min: parameterDatasets[loadParam1].minValue,
+      max: parameterDatasets[loadParam1].maxValue,
+      labels: {
+        formatter: function() {
+          if (this.isLast) {
+            return this.value / COLORaxisSCALE + "+";
+          } else {return this.value / COLORaxisSCALE;}
+        }
+      },
+      allowNegativeLog: true
     },
     series: [
       {
@@ -183,7 +184,7 @@ function displayParameterMap() {
 
 function parseCSV(data) {
   let rawData, headers, lineData, chartData, paramName, siteCode,
-      date, value, lat, long, dateValue, minValue, maxValue,
+      date, displayValue, value, lat, long, dateValue,
       paramList = [];
 
   rawData = data.split("\n");
@@ -214,7 +215,9 @@ function parseCSV(data) {
       chartData = {};
 
       chartData["id"] = siteCode;
-      chartData["value"] = chartData["z"] = value;
+      displayValue = Math.min(value, parameterDatasets[loadParam1].percentile95) * COLORaxisSCALE;
+      chartData["value"] = chartData["z"] = displayValue;
+      chartData["actual"] = value;
       chartData["lat"] = lat;
       chartData["lon"] = long;
 
@@ -228,11 +231,11 @@ function parseCSV(data) {
       }
 
       // test for min/max value
-      if (value < parameterDatasets[paramName].minValue || !parameterDatasets[paramName].minValue) {
-        parameterDatasets[paramName].minValue = value;
+      if (chartData["value"] < parameterDatasets[paramName].minValue || !parameterDatasets[paramName].minValue) {
+        parameterDatasets[paramName].minValue = chartData["value"];
       }
-      if (value > parameterDatasets[paramName].maxValue || !parameterDatasets[paramName].maxValue) {
-        parameterDatasets[paramName].maxValue = value;
+      if (chartData["value"] > parameterDatasets[paramName].maxValue || !parameterDatasets[paramName].maxValue) {
+        parameterDatasets[paramName].maxValue = chartData["value"];
       }
 
       // if the parameter doesn't exist, create it
