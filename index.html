@@ -43,41 +43,88 @@
     <div id="container" class="container-fluid">
       <div class="row">
         <!-- Large screens 1/3 - 2/3, Small screens Stacked -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-12">
-          <h3>Settings</h3>
-          <hr />
-          <h5>Parameter</h5>
-          <select id="parameter-dropdown" class="align-self-center" placeholder="Start typing parameter..." name="parameter_id"   onchange="updateChart(this.value)">
-          </select>
-          <h5>Dates</h5>
-          <p class="dates">
-            <input id="dateSlider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="0"/>
-          </p>
-          <h5>Playback</h5>
-          <p class="playback text-center">
-            <span onclick="">
-              <i id="datePlayRR" class="fas fa-angle-double-left fa-lg disabled"></i>
-            </span>
-            <span onclick="runAnimation('reverse')">
-              <i id="datePlayR" class="fas fa-play fa-lg" data-fa-transform="rotate-180" ></i>
-            </span>
-            <span onclick="runAnimation('none')">
-              <i id="datePlayStop" class="fas fa-stop fa-lg disabled"></i>
-            </span>
-            <span onclick="runAnimation('forward')">
-              <i id="datePlayF" class="fas fa-play fa-lg"></i>
-            </span>
-            <span onclick="">
-              <i id="datePlayFF" class="fas fa-angle-double-right fa-lg disabled"></i>
-            </span>
-          </p>
-          <p class="playback">
-            <input id="speedSlider" type="text" data-slider-min="1" data-slider-max="2001" data-slider-step="100" data-slider-value="1001" data-slider-tooltip="hide" data-slider-rtl="right"/>
-          </p>
-          <h5>Map Types</h5>
-          <button id="point" type="button" class="btn btn-primary btn-block">Map Point</button>
-          <button id="bubble" type="button" class="btn btn-secondary btn-block">Map Bubble</button>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-12 pr-0">
+          <div class="card round-top">
+            <div class="card-header round-top" id="headingOne">
+              <button class="btn btn-link round-top" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Parameter
+              </button>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+              <div class="card-body">
+                <select id="parameter-dropdown" class="align-self-center" placeholder="Start typing parameter..." name="parameter_id"   onchange="updateChart(this.value)">
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header" id="headingTwo">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Date
+              </button>
+            </div>
+
+            <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo">
+              <div class="card-body">
+                <p class="dates">
+                  <input id="dateSlider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="0"/>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header" id="headingThree">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Playback
+              </button>
+            </div>
+
+            <div id="collapseThree" class="collapse show" aria-labelledby="headingThree">
+              <div class="card-body">
+                <p class="playback text-center">
+                  <span onclick="">
+                    <i id="datePlayRR" class="fas fa-angle-double-left fa-lg disabled"></i>
+                  </span>
+                  <span onclick="runAnimation('reverse')">
+                    <i id="datePlayR" class="fas fa-play fa-lg" data-fa-transform="rotate-180" ></i>
+                  </span>
+                  <span onclick="runAnimation('none')">
+                    <i id="datePlayStop" class="fas fa-stop fa-lg disabled"></i>
+                  </span>
+                  <span onclick="runAnimation('forward')">
+                    <i id="datePlayF" class="fas fa-play fa-lg"></i>
+                  </span>
+                  <span onclick="">
+                    <i id="datePlayFF" class="fas fa-angle-double-right fa-lg disabled"></i>
+                  </span>
+                </p>
+                <p class="playback">
+                  <input id="speedSlider" type="text" data-slider-min="1" data-slider-max="2001" data-slider-step="100" data-slider-value="1001" data-slider-tooltip="hide" data-slider-rtl="right"/>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card round">
+            <div class="card-header" id="headingFour">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                Map Types
+              </button>
+            </div>
+
+            <div id="collapseFour" class="collapse show round" aria-labelledby="headingFour">
+              <div class="card-body round">
+                <button id="point" type="button" class="btn btn-primary btn-block">Map Point</button>
+                <button id="bubble" type="button" class="btn btn-secondary btn-block">Map Bubble</button>
+              </div>
+            </div>
+          </div>
+
         </div>
+
         <div class="col-lg-10 col-md-9 col-sm-8 col-12">
           <div id="mapid" class="mapid"></div>
         </div>

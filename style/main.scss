@@ -175,6 +175,35 @@ button.btn-primary {
   background-image: -webkit-linear-gradient(top, $color-primary-3 0, $color-primary-4 100%);
 }
 
+// CARDS
+
+.card {
+  @extend %inverse-color-text;
+  border-radius: 0;
+  .card-header {
+    padding: 5px;
+    button {
+      @extend %inverse-color-text;
+      display: block;
+      width: 100%;
+      padding: 0;
+      text-decoration: none;
+      border-radius: 0;
+    }
+    &:first-child {
+      border-radius: 0;
+    }
+  }
+  .collapse {
+    background-color: $background;
+  }
+}
+
+.round-top {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
 // MAP FORMATTING
 
 .mapid {
@@ -182,7 +211,7 @@ button.btn-primary {
   width: 100%;
 }
 
-// Playback
+// PLAYBACK
 
 .playback {
   display : flex;
@@ -193,8 +222,9 @@ button.btn-primary {
 }
 
 .fa-lg {
+  color: $color-primary-1;
   &.disabled {
-    color: $color-primary-0-disabled;
+    color: $color-primary-0-inverse;
   }
   &.active {
     color: $color-primary-4;
