@@ -28,7 +28,7 @@ body {
   color: gray;
 }
 .container-fluid {
-  height: calc(100% - 152px - 15px);
+  height: calc(100% - 152px - 42px - 15px);
   padding-top: 15px;
 }
 .row {
@@ -221,6 +221,15 @@ button.btn-primary {
 .mapid {
   height: 100%;
   width: 100%;
+}
+
+// TABS
+
+.tabContent {
+  height: 100%;
+  .tab-pane {
+    height: 100%;
+  }
 }
 
 // PLAYBACK

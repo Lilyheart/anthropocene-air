@@ -86,7 +86,7 @@
               <div class="card-body">
                 <p class="playback text-center">
                   <span onclick="">
-                    <i id="datePlayRR" class="fas fa-angle-double-left fa-lg disabled"></i>
+                    <!-- <i id="datePlayRR" class="fas fa-angle-double-left fa-lg disabled"></i> -->
                   </span>
                   <span onclick="runAnimation('reverse')">
                     <i id="datePlayR" class="fas fa-play fa-lg" data-fa-transform="rotate-180" ></i>
@@ -98,7 +98,7 @@
                     <i id="datePlayF" class="fas fa-play fa-lg"></i>
                   </span>
                   <span onclick="">
-                    <i id="datePlayFF" class="fas fa-angle-double-right fa-lg disabled"></i>
+                    <!-- <i id="datePlayFF" class="fas fa-angle-double-right fa-lg disabled"></i> -->
                   </span>
                 </p>
                 <p class="playback div-center">
@@ -127,7 +127,28 @@
         </div>
 
         <div class="col-lg-10 col-md-9 col-sm-8 col-12">
-          <div id="mapid" class="mapid"></div>
+
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="map-tab" data-toggle="tab" href="#maptab" role="tab" aria-controls="maptab" aria-selected="true">Map</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" id="faq-tab" data-toggle="tab" href="#faqtab" role="tab" aria-controls="faqtab" aria-selected="false">FAQ</a>
+            </li>
+          </ul>
+
+
+          <div class="tab-content tabContent" id="tabContent">
+            <div class="tab-pane fade show active" id="maptab" role="tabpanel" aria-labelledby="map-tab">
+              <div id="mapid" class="mapid"></div>
+            </div>
+            <div class="tab-pane fade" id="faqtab" role="tabpanel" aria-labelledby="faq-tab">
+              <p>
+                TODO
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

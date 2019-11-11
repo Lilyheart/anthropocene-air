@@ -23,7 +23,7 @@ function incrementDisplayDate(step) {
   try {
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
     // chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
-    chart.setTitle({text: "Parameter Map - " + parameterDatasets[loadParam1].name + " <br> " + dateSelected});
+    chart.setTitle(null, {text: dateSelected});
   } catch (error) {
     return;
   }
@@ -102,8 +102,10 @@ function displayParameterMap() {
 
   chart = Highcharts.mapChart("mapid", {
     title: {
-      text: "Parameter Map - " + parameterDatasets[loadParam1].name + " <br> "
-            + Object.keys(dataDictionary[loadParam1])[0]
+      text: "Parameter Map - " + parameterDatasets[loadParam1].name
+    },
+    subtitle: {
+      text: Object.keys(dataDictionary[loadParam1])[0]
     },
     tooltip: {
       headerFormat: "",
@@ -176,7 +178,7 @@ function displayParameterMap() {
     let dateSelected = displayDate(parameterDatasets[loadParam1].dates[this.value]);
 
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
-    chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
+    chart.setTitle(null, {text: dateSelected});
   });
 
   incrementDisplayDate(0);
