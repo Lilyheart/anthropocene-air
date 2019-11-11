@@ -110,11 +110,10 @@ function displayParameterMap() {
     tooltip: {
       headerFormat: "",
       pointFormatter: function() {
-        return "<strong>" + parameterDatasets[loadParam1].name + "</strong><br>" +
-               "Value: " + this.actual + "<br>----------------<br>" +
-               "Sitecode: " + this.id + "<br>" +
-               "Lat: " + this.lat + "<br>" +
-               "Lon: " + this.lon + "<br>";
+        return "<strong>" + parameterDatasets[loadParam1].name
+                          + " (" + this.id + ")</strong><br>" +
+               SITES[this.id].name + "<br>" +
+               "Value: " + this.actual;
       }
     },
     mapNavigation: {
@@ -272,7 +271,7 @@ function runAnimation(direction) {
       i = $("#dateSlider").slider("getValue"),
       max = 0;
 
-  if (dataDictionary.hasOwnProperty(loadParam1) && dataDictionary[loadParam1].hasOwnProperty("dates")) {
+  if (dataDictionary.hasOwnProperty(loadParam1)) {
     max = parameterDatasets[loadParam1].dates.length;
   }
 
