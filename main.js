@@ -86,7 +86,11 @@ function displayParameterMap() {
       data: displayData,
       dataLabels: {enabled: false},
       allAreas: false,
-      colorAxis: 0
+      colorAxis: 0,
+      marker: {
+        lineColor: "#111111",
+        lineWidth: "0.5"
+      }
     };
   } else if (maptype === "mapbubble") {
     mapSeries = {
@@ -106,6 +110,13 @@ function displayParameterMap() {
     },
     subtitle: {
       text: Object.keys(dataDictionary[loadParam1])[0]
+    },
+    chart: {
+      height: 500
+    },
+    exporting: {
+      scale: 3,
+      filename: "parameter-map-" + parameterDatasets[loadParam1].name
     },
     tooltip: {
       headerFormat: "",
@@ -365,6 +376,7 @@ $(document).ready(function() {
   $("#parameter-dropdown").selectize()[0].selectize.setValue(defaultParam, true);
 
   updateChart(defaultParam);
+  issues.getIssues();
 
   document.getElementById("mapid").addEventListener("mouseout", function () {
     if (chart && chart.lab) {
@@ -393,7 +405,7 @@ $(document).ready(function() {
 
   speedMax = $("#speedSlider").slider()[0].attributes["data-slider-ticks"].value;
   speedMax = speedMax.slice(1, speedMax.length + INVERSE);
-  speedMax = parseFloat(speedMax.split(",")[1]) + 1;
+  speedMax = parseFloat(speedMax.split(",")[1]) + parseFloat(speedMax.split(",")[0]);
 
   $("#speedSlider").slider().on("slideStop", function(ev) {
     timeoutSpeed = speedMax - this.value;

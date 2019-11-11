@@ -12,8 +12,10 @@
     <script src="https://kit.fontawesome.com/5a5642637a.js" crossorigin="anonymous"></script>    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="libraries/bootstrap-slider.min.css" media="screen" title="no title" charset="utf-8">
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
     <!-- Local -->
     <link rel="stylesheet" href="libraries/selectize.bootstrap3.css">
     <link rel="stylesheet" href="style/main.min.css" media="screen" title="no title" charset="utf-8">
@@ -103,7 +105,7 @@
                 </p>
                 <p class="playback div-center">
                   <!-- <input id="speedSlider" type="text" data-slider-min="1" data-slider-max="2001" data-slider-step="100" data-slider-value="1001" data-slider-tooltip="hide" data-slider-rtl="right"/> -->
-                  <input id="speedSlider" type="text" data-slider-step="100" data-slider-ticks="[0, 2000]", data-slider-ticks-labels='["Slow", "Fast"]' data-slider-value="1000"/>
+                  <input id="speedSlider" type="text" data-slider-step="100" data-slider-ticks="[100, 1900]", data-slider-ticks-labels='["Slow", "Fast"]' data-slider-value="1000"/>
                 </p>
               </div>
             </div>
@@ -133,7 +135,7 @@
               <a class="nav-link active" id="map-tab" data-toggle="tab" href="#maptab" role="tab" aria-controls="maptab" aria-selected="true">Map</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled" id="faq-tab" data-toggle="tab" href="#faqtab" role="tab" aria-controls="faqtab" aria-selected="false">FAQ</a>
+              <a class="nav-link" id="faq-tab" data-toggle="tab" href="#faqtab" role="tab" aria-controls="faqtab" aria-selected="false">FAQ</a>
             </li>
           </ul>
 
@@ -143,8 +145,10 @@
               <div id="mapid" class="mapid"></div>
             </div>
             <div class="tab-pane fade" id="faqtab" role="tabpanel" aria-labelledby="faq-tab">
+              <h3>Future Plans</h3>
               <p>
-                TODO
+                Below you will find a summary of future changes to this site.
+                <table id="issuestable" class="table table-hover" style="width:100%;"></table>
               </p>
             </div>
           </div>
@@ -166,10 +170,16 @@
     <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/us/custom/us-all-territories.js"></script>
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
     <!-- Local -->
     <script type="text/javascript" src="libraries/selectize.min.js"></script>
     <script type="text/javascript" src="data/-datasets.js"></script>
     <script type="text/javascript" src="data/-sites.js"></script>
+    <script type="text/javascript" src="issues.js"></script>
     <script type="text/javascript" src="main.js"></script>
     <span>
     </span>
