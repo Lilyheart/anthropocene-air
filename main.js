@@ -272,7 +272,7 @@ function runAnimation(direction) {
       i = $("#dateSlider").slider("getValue"),
       max = 0;
 
-  if (loadParam1) {
+  if (dataDictionary.hasOwnProperty(loadParam1) && dataDictionary[loadParam1].hasOwnProperty("dates")) {
     max = parameterDatasets[loadParam1].dates.length;
   }
 
@@ -400,3 +400,47 @@ $(document).ready(function() {
     timeoutSpeed = speedMax - this.value;
   });
 });
+
+async function testUpdateChart(repeats) {
+  let t0, t1, results,
+      param = "ALf";
+
+  results = [];
+  for (let i = 0; i < repeats; i += 1) {
+    // reset code
+    t0 = t1 = 0;
+    delete parameterDatasets[param]["isLoaded"];
+    delete parameterDatasets[param]["dates"];
+    delete parameterDatasets[param]["maxValue"];
+    delete parameterDatasets[param]["minValue"];
+
+
+    if (!parameterDatasets[param].isLoaded) {
+      chart = Highcharts.mapChart("mapid", {title: {text: "Loading Map"}});
+      await $.ajax({
+        type: "GET",
+        url: parameterDatasets[param].filename,
+        dataType: "text",
+        success: function(data) {
+          t0 = performance.now();
+          $("#dateSlider").slider("destroy");
+          $("#dateSlider").slider();
+          $("#dateSlider").slider("setValue", 0);
+          parameterDatasets[param].isLoaded = true;
+          parseCSV(data);
+          displayParameterMap();
+          t1 = performance.now();
+
+          results.push(t1 - t0);
+          console.log(t1 - t0);
+        }
+      });
+    }
+  }
+
+  console.log("Average: " + (results.reduce((acc, i) => acc + i, 0) / results.length));
+  console.log("Min: " + (Math.round(Math.min(...results) * TWODIGITDATE)) / TWODIGITDATE);
+  console.log("Max: " + (Math.round(Math.max(...results) * TWODIGITDATE)) / TWODIGITDATE);
+
+  console.log(results);
+}

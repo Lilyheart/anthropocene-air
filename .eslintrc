@@ -17,6 +17,7 @@
     "parameterDatasets": true,
 
     # const variables
+    "SITES": true,
 
     # Functions
 

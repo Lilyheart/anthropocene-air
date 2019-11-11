@@ -1,4 +1,5 @@
-parameterDatasets = {
+/*eslint id-length: 0*/
+var parameterDatasets = {
   ALf: {
     name: "Aluminum Fine",
     filename: "data/ALf.csv",
