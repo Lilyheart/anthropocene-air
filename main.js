@@ -22,7 +22,8 @@ function incrementDisplayDate(step) {
   $("#dateSlider").slider("setValue", newIndex);
   try {
     chart.series[2].setData(dataDictionary[loadParam1][dateSelected]);
-    chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
+    // chart.setTitle(null, {text: parameterDatasets[loadParam1].name + " - " + dateSelected});
+    chart.setTitle({text: "Parameter Map - " + parameterDatasets[loadParam1].name + " <br> " + dateSelected});
   } catch (error) {
     return;
   }
@@ -81,10 +82,11 @@ function displayParameterMap() {
   if (maptype === "mappoint") {
     mapSeries = {
       type: "mappoint",
-      animation: false,
       name: loadParam1,
       data: displayData,
-      dataLabels: {enabled: false}
+      dataLabels: {enabled: false},
+      allAreas: false,
+      colorAxis: 0
     };
   } else if (maptype === "mapbubble") {
     mapSeries = {
@@ -100,10 +102,8 @@ function displayParameterMap() {
 
   chart = Highcharts.mapChart("mapid", {
     title: {
-      text: "Parameter Map"
-    },
-    subtitle: {
-      text: parameterDatasets[loadParam1].name + " - " + Object.keys(dataDictionary[loadParam1])[0]
+      text: "Parameter Map - " + parameterDatasets[loadParam1].name + " <br> "
+            + Object.keys(dataDictionary[loadParam1])[0]
     },
     tooltip: {
       headerFormat: "",
