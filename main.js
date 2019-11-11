@@ -347,7 +347,8 @@ function updateChart(parameter) {
 }
 
 $(document).ready(function() {
-  let defaultParam = Object.keys(parameterDatasets)[0];
+  let speedMax,
+      defaultParam = Object.keys(parameterDatasets)[0];
 
   maptype = "mappoint";
 
@@ -389,7 +390,11 @@ $(document).ready(function() {
     updateChart(loadParam1);
   });
 
+  speedMax = $("#speedSlider").slider()[0].attributes["data-slider-ticks"].value;
+  speedMax = speedMax.slice(1, speedMax.length + INVERSE);
+  speedMax = parseFloat(speedMax.split(",")[1]) + 1;
+
   $("#speedSlider").slider().on("slideStop", function(ev) {
-    timeoutSpeed = this.value;
+    timeoutSpeed = speedMax - this.value;
   });
 });

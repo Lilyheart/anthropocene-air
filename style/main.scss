@@ -155,24 +155,33 @@ button.btn-primary {
 
 // Slider
 
-.dates {
-  .slider {
-    &.slider-horizontal {
-      width: 100%
+.slider {
+  &.slider-horizontal {
+    width: 100%
+  }
+  .tooltip {
+    &.in {
+      opacity: 1;
     }
-    .tooltip {
-      &.in {
-        opacity: 1;
-      }
-      .tooltip-inner{
-        margin-left: 50px;
-      }
+    .tooltip-inner{
+      margin-left: 50px;
     }
+  }
+  .slider-track {
+    .slider-selection {
+      background-image: none;
+    }
+  }
+  .slider-tick {
+    background-image: linear-gradient(to bottom,$color-primary-0-inverse 0,$color-primary-0-inverse 100%)
   }
 }
 .slider-handle {
   background-color: $color-primary-4;
   background-image: -webkit-linear-gradient(top, $color-primary-3 0, $color-primary-4 100%);
+}
+.slider-tick-label {
+  color: $color-primary-0;
 }
 
 // CARDS
@@ -180,6 +189,9 @@ button.btn-primary {
 .card {
   @extend %inverse-color-text;
   border-radius: 0;
+  .collapse {
+    background-color: $background;
+  }
   .card-header {
     padding: 5px;
     button {
@@ -194,8 +206,8 @@ button.btn-primary {
       border-radius: 0;
     }
   }
-  .collapse {
-    background-color: $background;
+  .card-body {
+    padding: 10px 20px;
   }
 }
 
@@ -214,11 +226,24 @@ button.btn-primary {
 // PLAYBACK
 
 .playback {
-  display : flex;
-  width : 100%;
+  display: flex;
+  width: 100%;
+  margin-bottom: 0;
   padding-top: 10px;
   justify-content : space-between;
   align-items: center;
+  &.div-center {
+    margin: $auto-margins;
+    width: 90%;
+    padding-top: 15px;
+  }
+  .slider {
+    .tooltip {
+      &.in {
+        opacity: 0;
+      }
+    }
+  }
 }
 
 .fa-lg {
