@@ -70,6 +70,20 @@
 
             <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo">
               <div class="card-body">
+                <p class="dateNav text-center">
+                  <span onclick="incrementDisplayDate(-100)">
+                    <i id="dateNavRR" class="fas fa-angle-double-left fa-lg"></i>
+                  </span>
+                  <span onclick="incrementDisplayDate(-1)">
+                    <i id="dateNavR" class="fas fa-angle-left fa-lg"></i>
+                  </span>
+                  <span onclick="incrementDisplayDate(1)">
+                    <i id="dateNavF" class="fas fa-angle-right fa-lg"></i>
+                  </span>
+                  <span onclick="incrementDisplayDate(100)">
+                    <i id="dateNavFF" class="fas fa-angle-double-right fa-lg"></i>
+                  </span>
+                </p>
                 <p class="dates">
                   <input id="dateSlider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="0"/>
                 </p>

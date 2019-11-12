@@ -17,6 +17,8 @@ function incrementDisplayDate(step) {
   let newIndex, dateSelected;
 
   newIndex = $("#dateSlider").slider("getValue") + step;
+  newIndex = Math.max(0, newIndex);
+  newIndex = Math.min(newIndex, (parameterDatasets[loadParam1].dates.length - 1));
   dateSelected = displayDate(parameterDatasets[loadParam1].dates[newIndex]);
 
   $("#dateSlider").slider("setValue", newIndex);
