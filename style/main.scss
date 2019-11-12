@@ -21,6 +21,7 @@ body {
   color: $color-primary-0;
   font-family: "Montserrat", "Avenir";
   height: 100vh;
+  counter-reset: footnotecounter;
 }
 .loading {
   margin-top: 10em;
@@ -232,9 +233,6 @@ button.btn-primary {
     height: 100%;
   }
 }
-.faqtab {
-  margin-top: 10px;
-}
 
 // PLAYBACK
 
@@ -267,4 +265,17 @@ button.btn-primary {
   &.active {
     color: $color-primary-4;
   }
+}
+
+// Footnotes
+
+span.footnote:before {
+  counter-increment: footnotecounter;
+  content: counter(footnotecounter);
+  position: relative;
+  top: -0.4em;
+}
+
+span.footnote {
+  color: #24B1E6;
 }

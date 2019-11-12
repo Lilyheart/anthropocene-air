@@ -427,6 +427,11 @@ $(document).ready(function() {
   $("#speedSlider").slider().on("slideStop", function(ev) {
     timeoutSpeed = speedMax - this.value;
   });
+
+  $('[data-toggle="tooltip"]').each(function() {
+    $(this).tooltip({html: true, container: $(this), delay: {hide: 400}});
+  });
+  
 });
 
 async function testUpdateChart(repeats) {

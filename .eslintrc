@@ -12,9 +12,12 @@
     "setTimeout": true,
     "console": true,
     "document": true,
+    "XMLHttpRequest": true,
+    "performance": true,
 
     # var variables
     "parameterDatasets": true,
+    "issues": true,
 
     # const variables
     "SITES": true,
