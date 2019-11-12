@@ -168,6 +168,13 @@ function displayParameterMap() {
       },
       allowNegativeLog: true
     },
+    legend: {
+      title: {
+        style: {"text-align": "center"},
+        text: "Percentiles: " + parameterDatasets[loadParam1].percentiles + " (Scale x" + parameterDatasets[loadParam1].scale + ")"
+      },
+      symbolWidth: 500
+    },
     series: [
       {
         name: "Basemap",
@@ -239,7 +246,7 @@ function parseCSV(data) {
       chartData["id"] = siteCode;
       displayValue = Math.max(value, parameterDatasets[loadParam1].percentileBottom);
       displayValue = Math.min(displayValue, parameterDatasets[loadParam1].percentileTop);
-      chartData["value"] = chartData["z"] = (displayValue * COLORaxisSCALE);
+      chartData["value"] = chartData["z"] = (displayValue * COLORaxisSCALE * parameterDatasets[loadParam1].scale);
       chartData["actual"] = value;
       chartData["lat"] = lat;
       chartData["lon"] = long;
