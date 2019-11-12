@@ -113,6 +113,14 @@ function displayParameterMap() {
     subtitle: {
       text: Object.keys(dataDictionary[loadParam1])[0]
     },
+    credits: {
+      text: "Highcharts.com, " +
+            "<a href'http://vista.cira.colostate.edu/Improve/data-acknowledgment/'>IMPROVE</a>, " +
+            "<a href'https://github.com/Lilyheart'>© Lily Romano</a>",
+      mapTextFull: "Map: Copyright (c) 2015 Highsoft AS, Based on data from Natural Earth -- " +
+                   "Design: Copyright (c) 2019 Lily Romano -- " +
+                   "Data: Based on data from IMPROVE"
+    },
     chart: {
       height: 500
     },

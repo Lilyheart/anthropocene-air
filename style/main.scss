@@ -28,6 +28,7 @@ body {
   color: gray;
 }
 .container-fluid {
+  max-width: 1200px;
   height: calc(100% - 152px - 42px - 15px);
   padding-top: 15px;
 }
@@ -230,6 +231,9 @@ button.btn-primary {
   .tab-pane {
     height: 100%;
   }
+}
+.faqtab {
+  margin-top: 10px;
 }
 
 // PLAYBACK
