@@ -40,6 +40,16 @@ var parameterDatasets = {
 		percentileBottom: 0,
     percentileTop: 2.98
   },
+  ECf: {
+    name: "Carbon, Elemental Total (Fine)",
+    filename: "data/ECf.csv",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: true,
+    scale: 1,
+    percentiles: "0% to 95%",
+		percentileBottom: 0,
+    percentileTop: 0.72
+  },
   NO3f: {
     name: "Nitrate (Fine)",
     filename: "data/NO3f.csv",
