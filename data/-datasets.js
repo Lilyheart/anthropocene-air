@@ -70,6 +70,16 @@ var parameterDatasets = {
 		percentileBottom: 0,
     percentileTop: 0.5
   },
+  OCf: {
+    name: "Carbon, Organic Total (Fine)",
+    filename: "data/OCf.csv",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: true,
+    scale: 1,
+    percentiles: "0% to 95%",
+		percentileBottom: 0,
+    percentileTop: 3
+  },
   SO4f: {
     name: "Sulfate (Fine)",
     filename: "data/SO4f.csv",
