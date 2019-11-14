@@ -3,7 +3,8 @@ var parameterDatasets = {
   PBf: {
     name: "Lead (Fine)",
     filename: "data/PBf.csv",
-    unit: "µg/m<super>3</su0per> LC",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: true,
     scale: 100,
     percentiles: "0% to 99%",
 		percentileBottom: 0,
@@ -12,7 +13,8 @@ var parameterDatasets = {
   ALf: {
     name: "Aluminum Fine",
     filename: "data/ALf.csv",
-    unit: "µg/m<super>3</super> LC",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: false,
     scale: 1,
     percentiles: "0% to 95%",
 		percentileBottom: 0,
@@ -21,7 +23,8 @@ var parameterDatasets = {
   NH4f: {
     name: "Ammonium Ion (Fine)",
     filename: "data/NH4f.csv",
-    unit: "µg/m<super>3</super> LC",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: true,
     scale: 1,
     percentiles: "0% to 95%",
 		percentileBottom: 0,
@@ -31,6 +34,7 @@ var parameterDatasets = {
     name: "Deciview",
     filename: "data/deciview.csv",
     unit: "dv",
+    isDisplay: false,
     scale: 1,
     percentiles: "0% to 98%",
 		percentileBottom: 0,
@@ -39,7 +43,8 @@ var parameterDatasets = {
   NO3f: {
     name: "Nitrate (Fine)",
     filename: "data/NO3f.csv",
-    unit: "µg/m<super>3</super> LC",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: true,
     scale: 1,
     percentiles: "0% to 95%",
 		percentileBottom: 0,
@@ -48,7 +53,8 @@ var parameterDatasets = {
   SO4f: {
     name: "Sulfate (Fine)",
     filename: "data/SO4f.csv",
-    unit: "µg/m<super>3</super> LC",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: true,
     scale: 1,
     percentiles: "0% to 98%",
 		percentileBottom: 0,

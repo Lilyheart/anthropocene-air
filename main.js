@@ -106,6 +106,14 @@ function displayParameterMap() {
     };
   }
 
+  let legendText;
+
+  if (parameterDatasets[loadParam1].scale === 1) {
+    legendText = parameterDatasets[loadParam1].name + " " + parameterDatasets[loadParam1].unit;
+  } else {
+    legendText = parameterDatasets[loadParam1].name + " " + parameterDatasets[loadParam1].unit + " (Scale x" + parameterDatasets[loadParam1].scale + ")";
+  }
+
   chart = Highcharts.mapChart("mapid", {
     title: {
       text: "Parameter Map - " + parameterDatasets[loadParam1].name
@@ -169,9 +177,10 @@ function displayParameterMap() {
       allowNegativeLog: true
     },
     legend: {
+      useHTML: true,
       title: {
         style: {"text-align": "center"},
-        text: "Percentiles: " + parameterDatasets[loadParam1].percentiles + " (Scale x" + parameterDatasets[loadParam1].scale + ")"
+        text: legendText
       },
       symbolWidth: 500
     },
@@ -179,7 +188,7 @@ function displayParameterMap() {
       {
         name: "Basemap",
         mapData: map,
-        borderColor: "#606060",
+        borderColor: "#BBBBBB",
         nullColor: "rgba(200, 200, 200, 0.2)",
         showInLegend: false
       }, {
@@ -387,7 +396,9 @@ $(document).ready(function() {
   $("#parameter-dropdown").selectize({});
   for (let key in parameterDatasets) {
     if (parameterDatasets.hasOwnProperty(key)) {
-      $("#parameter-dropdown")[0].selectize.addOption({value: key, text: parameterDatasets[key].name});
+      if (parameterDatasets[key].isDisplay) {
+        $("#parameter-dropdown")[0].selectize.addOption({value: key, text: parameterDatasets[key].name});
+      }
     }
   }
   $("#parameter-dropdown").selectize()[0].selectize.setValue(defaultParam, true);
@@ -431,7 +442,7 @@ $(document).ready(function() {
   $('[data-toggle="tooltip"]').each(function() {
     $(this).tooltip({html: true, container: $(this), delay: {hide: 400}});
   });
-  
+
 });
 
 async function testUpdateChart(repeats) {
