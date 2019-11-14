@@ -20,16 +20,6 @@ var parameterDatasets = {
 		percentileBottom: 0,
     percentileTop: 0.23
   },
-  NH4f: {
-    name: "Ammonium Ion (Fine)",
-    filename: "data/NH4f.csv",
-    unit: "µg/m<sup>3</sup> LC",
-    isDisplay: true,
-    scale: 1,
-    percentiles: "0% to 95%",
-		percentileBottom: 0,
-    percentileTop: 2.98
-  },
   dv: {
     name: "Deciview",
     filename: "data/deciview.csv",
@@ -40,6 +30,16 @@ var parameterDatasets = {
 		percentileBottom: 0,
     percentileTop: 28.14
   },
+  NH4f: {
+    name: "Ammonium Ion (Fine)",
+    filename: "data/NH4f.csv",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: true,
+    scale: 1,
+    percentiles: "0% to 95%",
+		percentileBottom: 0,
+    percentileTop: 2.98
+  },
   NO3f: {
     name: "Nitrate (Fine)",
     filename: "data/NO3f.csv",
@@ -49,6 +49,16 @@ var parameterDatasets = {
     percentiles: "0% to 95%",
 		percentileBottom: 0,
     percentileTop: 1.74
+  },
+  SIf: {
+    name: "Silicon (Fine)",
+    filename: "data/SIf.csv",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: true,
+    scale: 1,
+    percentiles: "0% to 95%",
+		percentileBottom: 0,
+    percentileTop: 0.5
   },
   SO4f: {
     name: "Sulfate (Fine)",
