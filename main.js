@@ -32,7 +32,7 @@ function incrementDisplayDate(step) {
 }
 
 function displayParameterMap() {
-  let mapSeries,
+  let mapSeries, legendText,
       displayData = dataDictionary[loadParam1][Object.keys(dataDictionary[loadParam1])[0]].slice(),
       map = Highcharts.maps["countries/us/custom/us-all-territories"];
 
@@ -106,12 +106,11 @@ function displayParameterMap() {
     };
   }
 
-  let legendText;
-
   if (parameterDatasets[loadParam1].scale === 1) {
-    legendText = parameterDatasets[loadParam1].name + " " + parameterDatasets[loadParam1].unit;
+    legendText = parameterDatasets[loadParam1].unit;
   } else {
-    legendText = parameterDatasets[loadParam1].name + " " + parameterDatasets[loadParam1].unit + " (Scale x" + parameterDatasets[loadParam1].scale + ")";
+    legendText = parameterDatasets[loadParam1].unit + " &times; 10<sup>" + parameterDatasets[loadParam1].scale.toExponential().split("e")[1] +
+    "</sup>";
   }
 
   chart = Highcharts.mapChart("mapid", {

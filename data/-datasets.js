@@ -5,13 +5,13 @@ var parameterDatasets = {
     filename: "data/PBf.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: true,
-    scale: 100,
+    scale: 1000,
     percentiles: "0% to 99%",
 		percentileBottom: 0,
     percentileTop: 0.0087
   },
   ALf: {
-    name: "Aluminum Fine",
+    name: "Aluminum (Fine)",
     filename: "data/ALf.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: false,
@@ -19,6 +19,16 @@ var parameterDatasets = {
     percentiles: "0% to 95%",
 		percentileBottom: 0,
     percentileTop: 0.23
+  },
+  CUf: {
+    name: "Copper (Fine)",
+    filename: "data/CUf.csv",
+    unit: "µg/m<sup>3</sup> LC",
+    isDisplay: true,
+    scale: 1000,
+    percentiles: "0% to 95%",
+		percentileBottom: 0,
+    percentileTop: 0.0062
   },
   dv: {
     name: "Deciview",
