@@ -105,6 +105,14 @@ function updateParams(parameter) {
   }
 }
 
+function updateAllParms() {
+  for (let key in parameterDatasets) {
+    if (parameterDatasets.hasOwnProperty(key)) {
+      updateParams(key);
+    }
+  }
+}
+
 function download(parameter) {
   var fileName, element, blob,
       jsonSpace = 2;
@@ -119,6 +127,14 @@ function download(parameter) {
   element.click();
 
   document.getElementById(parameter).classList.add("list-group-item-primary");
+}
+
+function downloadAllParms() {
+  for (let key in parameterDatasets) {
+    if (parameterDatasets.hasOwnProperty(key)) {
+      download(key);
+    }
+  }
 }
 
 $(document).ready(function() {
