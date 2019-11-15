@@ -2,9 +2,10 @@ var jsonData,
     dataDictionary = {};
 const INVERSE = -1,
       MISSINGVALUE = -999,
+      ROUNDING = 1000,
       DROP_SITE_CODE = ["EGBE1", "BYISX", "BYIS1", "BALA1"];
 
-function parseCSV(data) {
+function parseCSV(data, parameter) {
   let rawData, headers, lineData, chartData, paramName, siteCode,
       date, displayValue, value, lat, long, dateValue,
       paramList = [];
@@ -37,9 +38,9 @@ function parseCSV(data) {
       chartData = {};
 
       chartData["id"] = siteCode;
-      displayValue = Math.max(value, parameterDatasets[loadParam1].percentileBottom);
-      displayValue = Math.min(displayValue, parameterDatasets[loadParam1].percentileTop);
-      chartData["value"] = chartData["z"] = (displayValue * COLORaxisSCALE * parameterDatasets[loadParam1].scale);
+      displayValue = Math.max(value, parameterDatasets[parameter].percentileBottom);
+      displayValue = Math.min(displayValue, parameterDatasets[parameter].percentileTop);
+      chartData["value"] = chartData["z"] = Math.round((displayValue * COLORaxisSCALE * parameterDatasets[parameter].scale) * ROUNDING) / ROUNDING;
       chartData["actual"] = value;
       chartData["lat"] = lat;
       chartData["lon"] = long;
@@ -51,14 +52,6 @@ function parseCSV(data) {
       }
       if (parameterDatasets[paramName].dates.indexOf(dateValue) === INVERSE) {
         parameterDatasets[paramName].dates.push(dateValue);
-      }
-
-      // test for min/max value
-      if (chartData["value"] < parameterDatasets[paramName].minValue || !parameterDatasets[paramName].minValue) {
-        parameterDatasets[paramName].minValue = chartData["value"];
-      }
-      if (chartData["value"] > parameterDatasets[paramName].maxValue || !parameterDatasets[paramName].maxValue) {
-        parameterDatasets[paramName].maxValue = chartData["value"];
       }
 
       // if the parameter doesn't exist, create it
@@ -88,7 +81,7 @@ function parseCSV(data) {
 }
 
 function updateParams(parameter) {
-  loadParam1 = parameter;
+  let toAppend;
 
   if (!parameterDatasets[parameter].isLoaded) {
     $.ajax({
@@ -97,26 +90,38 @@ function updateParams(parameter) {
       dataType: "text",
       success: function(data) {
         parameterDatasets[parameter].isLoaded = true;
-        parseCSV(data);
+        parseCSV(data, parameter);
+
+        toAppend = "<button type='button'";
+        toAppend += " id='" + parameter + "'";
+        toAppend += " onClick='download(\"" + parameter + "\")'";
+        toAppend += " class='list-group-item list-group-item-action'>";
+        toAppend += parameter;
+        toAppend += "</button>";
+
+        $("#downloads").append(toAppend);
       }
     });
   }
 }
 
-function download(content, fileName, contentType) {
-  // Use with // download(jsonData, "json.txt", "text/plain");
-  var aaa, file;
+function download(parameter) {
+  var fileName, element, blob,
+      jsonSpace = 2;
 
-  aaa = document.createElement("a");
-  file = new Blob([content], {type: contentType});
-  aaa.href = URL.createObjectURL(file);
-  aaa.download = fileName;
-  aaa.click();
+  fileName = parameter + ".txt";
+  element = document.createElement("a");
+  // blob = new Blob(dataDictionary[parameter], {type: "text/plain"});
+  blob = new Blob([JSON.stringify(dataDictionary[parameter], null, jsonSpace)], {type: "text/plain"});
+
+  element.href = URL.createObjectURL(blob);
+  element.download = fileName;
+  element.click();
+
+  document.getElementById(parameter).classList.add("list-group-item-primary");
 }
 
 $(document).ready(function() {
-  jsonData = [];
-
   $("#parameter-dropdown").selectize({sortField: [{field: "text", direction: "asc"}]});
   for (let key in parameterDatasets) {
     if (parameterDatasets.hasOwnProperty(key)) {
@@ -125,5 +130,4 @@ $(document).ready(function() {
       }
     }
   }
-
 });
