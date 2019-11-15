@@ -9,7 +9,8 @@
     <!-- Fonts -->
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/5a5642637a.js" crossorigin="anonymous"></script>    <!-- Bootstrap -->
+    <script src="https://kit.fontawesome.com/5a5642637a.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="libraries/bootstrap-slider.min.css" media="screen" title="no title" charset="utf-8">
     <!-- DataTables -->
@@ -32,14 +33,6 @@
       </div>
       <h1><a href="index.html">Anthropocene Air</a></h1>
       <div id="stripe" class="stripe">
-        <!-- <div class="dropdown">
-          <button class="dropbtn">Previous Map Versions
-            <div class="arrow-down"></div>
-          </button>
-          <div class="dropdown-content">
-            <a href="versions/bubble.html">Bubbles</a>
-          </div>
-        </div> -->
       </div>
     </header>
     <div id="container" class="container-fluid">
@@ -55,7 +48,7 @@
 
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
               <div class="card-body">
-                <select id="parameter-dropdown" class="align-self-center" placeholder="Start typing parameter..." name="parameter_id"   onchange="updateChart(this.value)">
+                <select id="parameter-dropdown" class="align-self-center" placeholder="Start typing parameter..." name="parameter_id"   onchange="mapSingle.updateChart(this.value)">
                 </select>
               </div>
             </div>
@@ -71,16 +64,16 @@
             <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo">
               <div class="card-body">
                 <p class="dateNav text-center">
-                  <span onclick="incrementDisplayDate(-100)">
+                  <span onclick="mapSingle.incrementDisplayDate(-100)">
                     <i id="dateNavRR" class="fas fa-angle-double-left fa-lg"></i>
                   </span>
-                  <span onclick="incrementDisplayDate(-1)">
+                  <span onclick="mapSingle.incrementDisplayDate(-1)">
                     <i id="dateNavR" class="fas fa-angle-left fa-lg"></i>
                   </span>
-                  <span onclick="incrementDisplayDate(1)">
+                  <span onclick="mapSingle.incrementDisplayDate(1)">
                     <i id="dateNavF" class="fas fa-angle-right fa-lg"></i>
                   </span>
-                  <span onclick="incrementDisplayDate(100)">
+                  <span onclick="mapSingle.incrementDisplayDate(100)">
                     <i id="dateNavFF" class="fas fa-angle-double-right fa-lg"></i>
                   </span>
                 </p>
@@ -104,13 +97,13 @@
                   <span onclick="">
                     <!-- <i id="datePlayRR" class="fas fa-angle-double-left fa-lg disabled"></i> -->
                   </span>
-                  <span onclick="runAnimation('reverse')">
+                  <span onclick="mapSingle.runAnimation('reverse')">
                     <i id="datePlayR" class="fas fa-play fa-lg" data-fa-transform="rotate-180" ></i>
                   </span>
-                  <span onclick="runAnimation('none')">
+                  <span onclick="mapSingle.runAnimation('none')">
                     <i id="datePlayStop" class="fas fa-stop fa-lg disabled"></i>
                   </span>
-                  <span onclick="runAnimation('forward')">
+                  <span onclick="mapSingle.runAnimation('forward')">
                     <i id="datePlayF" class="fas fa-play fa-lg"></i>
                   </span>
                   <span onclick="">
@@ -119,7 +112,7 @@
                 </p>
                 <p class="playback div-center">
                   <!-- <input id="speedSlider" type="text" data-slider-min="1" data-slider-max="2001" data-slider-step="100" data-slider-value="1001" data-slider-tooltip="hide" data-slider-rtl="right"/> -->
-                  <input id="speedSlider" type="text" data-slider-step="100" data-slider-ticks="[100, 1900]", data-slider-ticks-labels='["Slow", "Fast"]' data-slider-value="1000"/>
+                  <input id="speedSlider" type="text" data-slider-step="100" data-slider-ticks="[200, 1800]", data-slider-ticks-labels='["Slow", "Fast"]' data-slider-value="1000"/>
                 </p>
               </div>
             </div>
@@ -188,7 +181,7 @@
                 The distribution of each parameter is analyzed prior to being added to the site. Percentiles are selected so that many of the data features are visible. These percentiles represent the minimum and maximum used for the color scale.  Each value outside of this range is colored as if it were the minimum or maximum amount. The actual data value is available by hovering the mouse over the data point. The color scale represents at least 95% of the data of any parameter.
               </p>
               <h3>Future Plans</h3>
-              <p>
+              <p class="pl-4">
                 Below you will find a summary of future changes to this site.
                 <table id="issuestable" class="table table-hover" style="width:100%;"></table>
               </p>
@@ -206,32 +199,33 @@
         </div>
       </div>
     </div>
-    <!-- Script Libraries -->
-    <!-- Fontawesome -->
-    <script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js" integrity="sha384-b3ua1l97aVGAPEIe48b4TC60WUQbQaGi2jqAWM90y0OZXZeyaTCWtBTKtjW2GXG1" crossorigin="anonymous"></script>
-    <!-- Bootstrap -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="libraries/bootstrap-slider.min.js"></script>
-    <!-- Highmaps -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
-    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/data.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
-    <script src="https://code.highcharts.com/mapdata/countries/us/custom/us-all-territories.js"></script>
-    <!-- DataTables -->
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
-    <!-- Local -->
-    <script type="text/javascript" src="libraries/selectize.min.js"></script>
-    <script type="text/javascript" src="data/-datasets.js"></script>
-    <script type="text/javascript" src="data/-sites.js"></script>
-    <script type="text/javascript" src="issues.js"></script>
-    <script type="text/javascript" src="main.js"></script>
     <span>
+      <!-- Script Libraries -->
+      <!-- Fontawesome -->
+      <script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js" integrity="sha384-b3ua1l97aVGAPEIe48b4TC60WUQbQaGi2jqAWM90y0OZXZeyaTCWtBTKtjW2GXG1" crossorigin="anonymous"></script>
+      <!-- Bootstrap -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      <script type="text/javascript" src="libraries/bootstrap-slider.min.js"></script>
+      <!-- Highmaps -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
+      <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+      <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+      <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+      <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
+      <script src="https://code.highcharts.com/mapdata/countries/us/custom/us-all-territories.js"></script>
+      <!-- DataTables -->
+      <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+      <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+      <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+      <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+      <!-- Local -->
+      <script type="text/javascript" src="libraries/selectize.min.js"></script>
+      <script type="text/javascript" src="data/-datasets.js"></script>
+      <script type="text/javascript" src="data/-sites.js"></script>
+      <script type="text/javascript" src="scripts/issues.js"></script>
+      <script type="text/javascript" src="scripts/mapSingle.js"></script>
+      <script type="text/javascript" src="scripts/main.js"></script>
     </span>
   </body>
 </html>

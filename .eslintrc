@@ -17,12 +17,22 @@
 
     # var variables
     "parameterDatasets": true,
-    "issues": true,
+    "loadParam1": true,
+    "loadParam2": true,
+    "dataDictionary": true,
 
     # const variables
     "SITES": true,
+    "INVERSE": true,
+    "COLORaxisSCALE": true,
 
     # Functions
+    "displayDate": true,
+    "parseCSV": true,
+
+    # Other files
+    "issues": true,
+    "mapSingle": true,
 
     # external files
     "Highcharts": true
@@ -203,7 +213,7 @@
     "block-scoped-var": "warn",
     "func-style": ["warn", "declaration"],
     "id-length": ["warn", {
-        "exceptions": ["i", "id"],
+        "exceptions": ["i", "id", "ev"],
         "min": 3,
         "max": 20}],
     # "max-statements": ["warn", 10],

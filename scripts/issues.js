@@ -1,6 +1,7 @@
 var issues = (function () {
   let issueURL, projectPages, issueListArr,
-      state = 2;
+      state = 2,
+      validTags = ["Bug", "Documentation", "Enhancement", "Suggestion", "Support"];
 
   function displayTable() {
     let table, filteredData;
@@ -62,6 +63,16 @@ var issues = (function () {
 
     // Remove closed issues
     issueListArr = issueListArr.filter(issue => issue.state === "opened");
+
+    for (let issueIndex in issueListArr) {
+      if (issueListArr.hasOwnProperty(issueIndex)) {
+        for (let i = (issueListArr[issueIndex].labels.length - 1); i >= 0; i -= 1) {
+          if (validTags.indexOf(issueListArr[issueIndex].labels[i]) === INVERSE) {
+            issueListArr[issueIndex].labels.splice(i, 1);
+          }
+        }
+      }
+    }
 
     displayTable();
   }
