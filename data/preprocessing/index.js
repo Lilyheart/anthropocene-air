@@ -40,19 +40,13 @@ function parseCSV(data, parameter) {
       chartData["id"] = siteCode;
       displayValue = Math.max(value, parameterDatasets[parameter].percentileBottom);
       displayValue = Math.min(displayValue, parameterDatasets[parameter].percentileTop);
-      chartData["value"] = chartData["z"] = Math.round((displayValue * COLORaxisSCALE * parameterDatasets[parameter].scale) * ROUNDING) / ROUNDING;
+      displayValue = displayValue * COLORaxisSCALE * parameterDatasets[parameter].scale;
+      chartData["value"] = chartData["z"] = Math.round(displayValue * ROUNDING) / ROUNDING;
       chartData["actual"] = value;
       chartData["lat"] = lat;
       chartData["lon"] = long;
 
       paramName = headers[j].split(":")[0];
-      // add date to slider array
-      if (!parameterDatasets[paramName].hasOwnProperty("dates")) {
-        parameterDatasets[paramName].dates = [];
-      }
-      if (parameterDatasets[paramName].dates.indexOf(dateValue) === INVERSE) {
-        parameterDatasets[paramName].dates.push(dateValue);
-      }
 
       // if the parameter doesn't exist, create it
       if (!dataDictionary.hasOwnProperty(paramName)) {
@@ -67,17 +61,6 @@ function parseCSV(data, parameter) {
       }
     }
   }
-
-  for (let param in paramList) {
-    if (paramList.hasOwnProperty(param)) {
-      parameterDatasets[paramList[param]].dates.sort(function (date1, date2) {
-        if (date1 > date2) {return 1;}
-        if (date1 < date2) {return INVERSE;}
-
-        return 0;
-      });
-    }
-  }
 }
 
 function updateParams(parameter) {
@@ -86,7 +69,7 @@ function updateParams(parameter) {
   if (!parameterDatasets[parameter].isLoaded) {
     $.ajax({
       type: "GET",
-      url: parameterDatasets[parameter].filename,
+      url: "data/" + parameter + ".csv",
       dataType: "text",
       success: function(data) {
         parameterDatasets[parameter].isLoaded = true;
@@ -111,6 +94,7 @@ function updateAllParms() {
       updateParams(key);
     }
   }
+  $("#downloadAll").prop("disabled", false);
 }
 
 function download(parameter) {

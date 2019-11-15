@@ -30,7 +30,7 @@
 
     # Functions
     "displayDate": true,
-    "parseCSV": true,
+    "parsedData": true,
 
     # Other files
     "issues": true,

@@ -3,7 +3,6 @@ var COLORaxisSCALE = 100,
 parameterDatasets = {
   PBf: {
     name: "Lead (Fine)",
-    filename: "data/PBf.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: true,
     scale: 1000,
@@ -13,7 +12,6 @@ parameterDatasets = {
   },
   ALf: {
     name: "Aluminum (Fine)",
-    filename: "data/ALf.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: false,
     scale: 1,
@@ -23,7 +21,6 @@ parameterDatasets = {
   },
   CUf: {
     name: "Copper (Fine)",
-    filename: "data/CUf.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: true,
     scale: 1000,
@@ -33,7 +30,6 @@ parameterDatasets = {
   },
   dv: {
     name: "Deciview",
-    filename: "data/deciview.csv",
     unit: "dv",
     isDisplay: false,
     scale: 1,
@@ -43,7 +39,6 @@ parameterDatasets = {
   },
   NH4f: {
     name: "Ammonium Ion (Fine)",
-    filename: "data/NH4f.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: true,
     scale: 1,
@@ -53,7 +48,6 @@ parameterDatasets = {
   },
   ECf: {
     name: "Carbon, Elemental Total (Fine)",
-    filename: "data/ECf.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: true,
     scale: 1,
@@ -63,7 +57,6 @@ parameterDatasets = {
   },
   NO3f: {
     name: "Nitrate (Fine)",
-    filename: "data/NO3f.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: true,
     scale: 1,
@@ -73,7 +66,6 @@ parameterDatasets = {
   },
   SIf: {
     name: "Silicon (Fine)",
-    filename: "data/SIf.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: true,
     scale: 1,
@@ -83,7 +75,6 @@ parameterDatasets = {
   },
   OCf: {
     name: "Carbon, Organic Total (Fine)",
-    filename: "data/OCf.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: true,
     scale: 1,
@@ -93,7 +84,6 @@ parameterDatasets = {
   },
   SO4f: {
     name: "Sulfate (Fine)",
-    filename: "data/SO4f.csv",
     unit: "µg/m<sup>3</sup> LC",
     isDisplay: true,
     scale: 1,

@@ -93,38 +93,6 @@ var mapSingle = (function () {
       HMap.seriesTypes.mappoint.prototype.translateColors = HMap.seriesTypes.heatmap.prototype.translateColors;
       HMap.seriesTypes.mappoint.prototype.colorKey = "value";
 
-      // Handle negative values in logarithmic
-      HMap.addEvent(HMap.ColorAxis, "init", function (ev) {this.allowNegativeLog = ev.userOptions.allowNegativeLog;});
-      // Override conversions
-      HMap.wrap(HMap.ColorAxis.prototype, "log2lin", function (proceed, num) {
-        var isNegative, adjustedNum, result;
-
-        if (!this.allowNegativeLog) {return proceed.call(this, num);}
-
-        isNegative = num < 0;
-        adjustedNum = Math.abs(num);
-        if (adjustedNum < TWODIGITDATE) {adjustedNum += (TWODIGITDATE - adjustedNum) / TWODIGITDATE;}
-        result = Math.log(adjustedNum) / Math.LN10;
-
-        if (isNegative) {result *= INVERSE;}
-
-        return result;
-      });
-
-      HMap.wrap(HMap.ColorAxis.prototype, "lin2log", function (proceed, num) {
-        var isNegative, absNum, result;
-
-        if (!this.allowNegativeLog) {return proceed.call(this, num);}
-
-        isNegative = num < 0;
-        absNum = Math.abs(num);
-        result = Math.pow(TWODIGITDATE, absNum);
-        if (result < TWODIGITDATE) {result = (TWODIGITDATE * (result - 1)) / (TWODIGITDATE - 1);}
-
-        if (isNegative) {result *= INVERSE;}
-
-        return result;
-      });
     }(Highcharts));
 
     if (maptype === "mappoint") {
@@ -210,8 +178,10 @@ var mapSingle = (function () {
           [1.00, "#7F0000"]
           /* eslint-enable */
         ],
-        min: parameterDatasets[loadParam1].minValue,
-        max: parameterDatasets[loadParam1].maxValue,
+        // min: parameterDatasets[loadParam1].minValue,
+        // max: parameterDatasets[loadParam1].maxValue,
+        min: parameterDatasets[loadParam1].percentileBottom * COLORaxisSCALE * parameterDatasets[loadParam1].scale,
+        max: parameterDatasets[loadParam1].percentileTop * COLORaxisSCALE * parameterDatasets[loadParam1].scale,
         labels: {
           formatter: function() {
             if (this.isLast) {
@@ -269,18 +239,18 @@ var mapSingle = (function () {
     runAnimation("none");
     loadParam1 = parameter;
 
-    if (!parameterDatasets[parameter].isLoaded) {
+    if (!parameterDatasets[loadParam1].isLoaded) {
       chart = Highcharts.mapChart("mapid", {title: {text: "Loading Map"}});
+
       $.ajax({
-        type: "GET",
-        url: parameterDatasets[parameter].filename,
-        dataType: "text",
+        url: "data/" + loadParam1 + ".txt",
+        dataType: "json",
         success: function(data) {
           $("#dateSlider").slider("destroy");
           $("#dateSlider").slider();
           $("#dateSlider").slider("setValue", 0);
-          parameterDatasets[parameter].isLoaded = true;
-          parseCSV(data);
+          parameterDatasets[loadParam1].isLoaded = true;
+          parsedData(data, parameter);
           displayParameterMap();
         }
       });
