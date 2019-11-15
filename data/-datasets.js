@@ -1,5 +1,6 @@
 /*eslint id-length: 0*/
-var parameterDatasets = {
+var COLORaxisSCALE = 100,
+parameterDatasets = {
   PBf: {
     name: "Lead (Fine)",
     filename: "data/PBf.csv",

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <!-- Selectize -->
+    <link rel="stylesheet" href="../../libraries/selectize.bootstrap3.css">
+  </head>
+  <body>
+
+
+    <div class="container pt-4">
+
+      <div class="jumbotron">
+        <h1 class="display-3">Processing</h1>
+        <p>Preprocessing of IMPROVE Datasets.  </p>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <h4>Instructions</h4>
+          <p>
+            Download the from the <a href="http://views.cira.colostate.edu/fed/QueryWizard/Default.aspx">Federal Land Management Environmental Database Query Wizard.</a>
+          </p>
+          <ul>
+            <li>Datasets: IMPROVE Aerosol</li>
+            <li>Sites: Select all</li>
+            <li>Parameters: Parameter of interest</li>
+            <li>Dates: All years, All months</li>
+            <li>Aggregations: Default</li>
+            <li>Fields: Site, Date, Data Value, Latitude, Longitude</li>
+            <li>Options: TextFile, Delimited (,), Standard, Data Only, None, -999, 03/04/2002</li>
+          </ul>
+        </div>
+
+        <div class="col-md-8">
+          <select id="parameter-dropdown" class="align-self-center" placeholder="Start typing parameter..." name="parameter_id"   onchange="updateParams(this.value)">
+          </select>
+        </div>
+      </div>
+
+    </div> <!-- /container -->
+
+
+
+    <span>
+      <!-- Bootstrap -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      <script type="text/javascript" src="../../libraries/selectize.min.js"></script>
+      <!-- Local -->
+      <script type="text/javascript" src="../-datasets.js"></script>
+      <script type="text/javascript" src="index.js"></script>
+    </span>
+  </body>
+</html>

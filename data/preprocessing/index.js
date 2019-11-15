@@ -1,14 +1,8 @@
-var parameterDatasets, loadParam1, loadParam2,
+var jsonData,
     dataDictionary = {};
 const INVERSE = -1,
-      COLORaxisSCALE = 100,
       MISSINGVALUE = -999,
       DROP_SITE_CODE = ["EGBE1", "BYISX", "BYIS1", "BALA1"];
-
-// Functions
-function displayDate(UTCdate) {
-  return new Date(UTCdate).toLocaleString("zu", {month: "2-digit", day: "2-digit", year: "numeric", timeZone: "UTC"});
-}
 
 function parseCSV(data) {
   let rawData, headers, lineData, chartData, paramName, siteCode,
@@ -93,12 +87,35 @@ function parseCSV(data) {
   }
 }
 
-$(document).ready(function() {
-  let speedMax,
-      defaultParam = Object.keys(parameterDatasets)[0];
+function updateParams(parameter) {
+  loadParam1 = parameter;
 
-  $("#dateSlider").slider();
-  $("#speedSlider").slider({tooltip: "never"});
+  if (!parameterDatasets[parameter].isLoaded) {
+    $.ajax({
+      type: "GET",
+      url: parameterDatasets[parameter].filename,
+      dataType: "text",
+      success: function(data) {
+        parameterDatasets[parameter].isLoaded = true;
+        parseCSV(data);
+      }
+    });
+  }
+}
+
+function download(content, fileName, contentType) {
+  // Use with // download(jsonData, "json.txt", "text/plain");
+  var aaa, file;
+
+  aaa = document.createElement("a");
+  file = new Blob([content], {type: contentType});
+  aaa.href = URL.createObjectURL(file);
+  aaa.download = fileName;
+  aaa.click();
+}
+
+$(document).ready(function() {
+  jsonData = [];
 
   $("#parameter-dropdown").selectize({sortField: [{field: "text", direction: "asc"}]});
   for (let key in parameterDatasets) {
@@ -108,30 +125,5 @@ $(document).ready(function() {
       }
     }
   }
-  $("#parameter-dropdown").selectize()[0].selectize.setValue(defaultParam, true);
-
-  mapSingle.setMaptype("mappoint");
-  mapSingle.updateChart(defaultParam);
-  issues.getIssues();
-
-  document.getElementById("point").addEventListener("click", function(event) {
-    mapSingle.setMaptype("mappoint");
-  });
-
-  document.getElementById("bubble").addEventListener("click", function(event) {
-    mapSingle.setMaptype("mapbubble");
-  });
-
-  speedMax = $("#speedSlider").slider()[0].attributes["data-slider-ticks"].value;
-  speedMax = speedMax.slice(1, speedMax.length + INVERSE);
-  speedMax = parseFloat(speedMax.split(",")[1]) + parseFloat(speedMax.split(",")[0]);
-
-  $("#speedSlider").slider().on("slideStop", function(ev) {
-    mapSingle.setTimeout(speedMax - this.value);
-  });
-
-  $('[data-toggle="tooltip"]').each(function() {
-    $(this).tooltip({html: true, container: $(this), delay: {hide: 400}});
-  });
 
 });
