@@ -4,7 +4,13 @@ const INVERSE = -1;
 
 // Functions
 function displayDate(UTCdate) {
-  return new Date(UTCdate).toLocaleString("zu", {month: "2-digit", day: "2-digit", year: "numeric", timeZone: "UTC"});
+  let month, day, year;
+
+  month = (new Date(UTCdate).getUTCMonth() + 1).toString();
+  day = (new Date(UTCdate).getUTCDate()).toString();
+  year = (new Date(UTCdate).getUTCFullYear()).toString();
+
+  return month.padStart(2, "0") + "/" + day.padStart(2, "0") + "/" + year;
 }
 
 function parsedData(data, parameter) {
@@ -23,7 +29,7 @@ function parsedData(data, parameter) {
   }
   for (let dateIndex in dates) {
     if (dates.hasOwnProperty(dateIndex)) {
-      parameterDatasets[parameter].dates.push(new Date(dates[dateIndex] + "Z").valueOf());
+      parameterDatasets[parameter].dates.push(new Date(dates[dateIndex] + " 00:00:00 +0").valueOf());
     }
   }
 

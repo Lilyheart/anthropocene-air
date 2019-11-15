@@ -113,7 +113,7 @@ var mapSingle = (function () {
         type: "mapbubble",
         name: loadParam1,
         data: displayData,
-        minSize: Math.max(0, parameterDatasets[loadParam1].minValue),
+        minSize: Math.max(0, parameterDatasets[loadParam1].percentileBottom),
         maxSize: "12%",
         color: "#3E5E6D",
         dataLabels: {enabled: false}
