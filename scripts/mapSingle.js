@@ -2,7 +2,10 @@ var mapSingle = (function () {
   let chart, playDirection, maptype,
       timeoutSpeed = 750;
   const TWODIGITDATE = 10,
-        ROUND = 1000000;
+        ROUND = 1000000,
+        LOADING_DIFF = 0.4,
+        LOADING_TIMEIN = 1000,
+        LOADING_TIMEOUT = LOADING_TIMEIN * LOADING_DIFF;
 
   function incrementDisplayDate(step) {
     let newIndex, dateSelected;
@@ -245,7 +248,17 @@ var mapSingle = (function () {
     loadParam1 = parameter;
 
     if (!parameterDatasets[loadParam1].isLoaded) {
-      chart = Highcharts.mapChart("mapid", {title: {text: "Loading Map"}});
+      chart = Highcharts.mapChart("mapid", {
+        title: {
+          text: "Parameter Map - " + parameterDatasets[loadParam1].name
+        },
+        loading: {
+          labelStyle: {color: "black", fontSize: "3rem", fontWeight: "bold", position: "relative", top: "45%"},
+          showDuration: LOADING_TIMEIN,
+          hideDuration: LOADING_TIMEOUT
+        }
+      });
+      chart.showLoading();
 
       $.ajax({
         url: "data/" + loadParam1 + ".txt",
@@ -256,7 +269,8 @@ var mapSingle = (function () {
           $("#dateSlider").slider("setValue", 0);
           parameterDatasets[loadParam1].isLoaded = true;
           parsedData(data, parameter);
-          displayParameterMap();
+          chart.hideLoading();
+          setTimeout(displayParameterMap, LOADING_TIMEOUT);
         }
       });
     } else {
