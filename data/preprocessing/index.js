@@ -1,8 +1,9 @@
 var jsonData,
-    dataDictionary = {};
+    dataDictionary = {},
+    loadedParams = [];
 const INVERSE = -1,
       MISSINGVALUE = -999,
-      ROUNDING = 1000,
+      PRECISIION = 5,
       DROP_SITE_CODE = ["EGBE1", "BYISX", "BYIS1", "BALA1"];
 
 function parseCSV(data, parameter) {
@@ -25,7 +26,7 @@ function parseCSV(data, parameter) {
     if (DROP_SITE_CODE.includes(siteCode)) {continue;}
 
     date = lineData[1];
-    dateValue = new Date(date + "Z").valueOf();
+    dateValue = new Date(date + " 00:00:00 +0").valueOf();
     lat = parseFloat(lineData[2]);
     long = parseFloat(lineData[3]);
 
@@ -33,16 +34,12 @@ function parseCSV(data, parameter) {
     for (let j = 4; j < headers.length; j += 1) {
       if (parseFloat(lineData[j]) === MISSINGVALUE) {continue;}
 
-      value = Math.max(0, parseFloat(lineData[j]));
-
       chartData = {};
 
       chartData["id"] = siteCode;
-      displayValue = Math.max(value, parameterDatasets[parameter].percentileBottom);
-      displayValue = Math.min(displayValue, parameterDatasets[parameter].percentileTop);
-      displayValue = displayValue * COLORaxisSCALE * parameterDatasets[parameter].scale;
-      chartData["value"] = chartData["z"] = Math.round(displayValue * ROUNDING) / ROUNDING;
-      chartData["actual"] = value;
+      displayValue = (parseFloat(lineData[j]) * parameterDatasets[parameter].scale);
+      displayValue = parseFloat( displayValue.toPrecision(PRECISIION));
+      chartData["value"] = chartData["z"] = displayValue;
       chartData["lat"] = lat;
       chartData["lon"] = long;
 
@@ -83,6 +80,9 @@ function updateParams(parameter) {
         toAppend += "</button>";
 
         $("#downloads").append(toAppend);
+
+        $("#downloadAll").prop("disabled", false);
+        loadedParams.push(parameter);
       }
     });
   }
@@ -103,7 +103,6 @@ function download(parameter) {
 
   fileName = parameter + ".txt";
   element = document.createElement("a");
-  // blob = new Blob(dataDictionary[parameter], {type: "text/plain"});
   blob = new Blob([JSON.stringify(dataDictionary[parameter], null, jsonSpace)], {type: "text/plain"});
 
   element.href = URL.createObjectURL(blob);
@@ -114,9 +113,9 @@ function download(parameter) {
 }
 
 function downloadAllParms() {
-  for (let key in parameterDatasets) {
-    if (parameterDatasets.hasOwnProperty(key)) {
-      download(key);
+  for (let key in loadedParams) {
+    if (loadedParams.hasOwnProperty(key)) {
+      download(loadedParams[key]);
     }
   }
 }

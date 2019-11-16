@@ -1,7 +1,8 @@
 var mapSingle = (function () {
   let chart, playDirection, maptype,
       timeoutSpeed = 750;
-  const TWODIGITDATE = 10;
+  const TWODIGITDATE = 10,
+        ROUND = 1000000;
 
   function incrementDisplayDate(step) {
     let newIndex, dateSelected;
@@ -101,8 +102,8 @@ var mapSingle = (function () {
         name: loadParam1,
         data: displayData,
         dataLabels: {enabled: false},
-        allAreas: false,
         colorAxis: 0,
+        allAreas: false,
         marker: {
           lineColor: "#111111",
           lineWidth: "0.5"
@@ -113,10 +114,12 @@ var mapSingle = (function () {
         type: "mapbubble",
         name: loadParam1,
         data: displayData,
-        minSize: Math.max(0, parameterDatasets[loadParam1].percentileBottom),
+        dataLabels: {enabled: false},
+        colorAxis: 0,
+        minSize: 4,
         maxSize: "12%",
-        color: "#3E5E6D",
-        dataLabels: {enabled: false}
+        zMin: 0,
+        zMax: parameterDatasets[loadParam1].maxDisplay * parameterDatasets[loadParam1].scale
       };
     }
 
@@ -153,9 +156,9 @@ var mapSingle = (function () {
         headerFormat: "",
         pointFormatter: function() {
           return "<strong>" + parameterDatasets[loadParam1].name
-                            + " (" + this.id + ")</strong><br>" +
-                 SITES[this.id].name + "<br>" +
-                 "Value: " + this.actual;
+                 + " (" + this.id + ")</strong><br>"
+                 + SITES[this.id].name + "<br>"
+                 + "Value: " + Math.round((this.value / parameterDatasets[loadParam1].scale) * ROUND) / ROUND;
         }
       },
       mapNavigation: {
@@ -165,6 +168,20 @@ var mapSingle = (function () {
           }
       },
       colorAxis: {
+        startOnTick: true,
+        endOnTick: true,
+        labels: {
+          overflow: "allow",
+          formatter: function() {
+            if (this.isLast) {
+              return this.value + "+";
+            } else {return this.value;}
+          }
+        },
+        softMin: 0,
+        min: parameterDatasets[loadParam1].minDisplay * parameterDatasets[loadParam1].scale,
+        max: (parameterDatasets[loadParam1].maxDisplay * parameterDatasets[loadParam1].scale),
+        minorTicks: false,
         stops: [
           /* eslint-disable */
           [0.00, "#00007F"],
@@ -177,19 +194,7 @@ var mapSingle = (function () {
           [0.83, "#ff0000"],
           [1.00, "#7F0000"]
           /* eslint-enable */
-        ],
-        // min: parameterDatasets[loadParam1].minValue,
-        // max: parameterDatasets[loadParam1].maxValue,
-        min: parameterDatasets[loadParam1].percentileBottom * COLORaxisSCALE * parameterDatasets[loadParam1].scale,
-        max: parameterDatasets[loadParam1].percentileTop * COLORaxisSCALE * parameterDatasets[loadParam1].scale,
-        labels: {
-          formatter: function() {
-            if (this.isLast) {
-              return this.value / COLORaxisSCALE + "+";
-            } else {return this.value / COLORaxisSCALE;}
-          }
-        },
-        allowNegativeLog: true
+        ]
       },
       legend: {
         useHTML: true,
